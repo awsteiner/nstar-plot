@@ -327,4 +327,5 @@ ax.text(0.85,0.075,r'$M_{\mathrm{max}}>2\mathrm{M}_{\odot}$',
         ha='center',zorder=4)
 
 plot.savefig('nstar_plot.png')
+plot.savefig('nstar_plot.eps')
 plot.show()
