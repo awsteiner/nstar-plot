@@ -1,2 +1,5 @@
-# nstar-plot
-A neutron star cartoon plot
+A neutron star cartoon plot.
+
+[nstar_plot.png]
+
+
