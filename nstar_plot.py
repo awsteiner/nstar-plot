@@ -1,26 +1,26 @@
 """
-  -------------------------------------------------------------------
+-------------------------------------------------------------------
 
-  Copyright (C) 2015, Andrew W. Steiner
-  
-  This is based on the excellent work by Dany Page.
+Copyright (C) 2015, Andrew W. Steiner
 
-  This neutron star plot is free software; you can redistribute it
-  and/or modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 3 of
-  the License, or (at your option) any later version.
-  
-  This neutron star plot is distributed in the hope that it will be
-  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with this neutron star plot. If not, see
-  <http://www.gnu.org/licenses/>.
+This is based on the excellent work by Dany Page at
+http://www.astroscu.unam.mx/neutrones/home.html
 
-  -------------------------------------------------------------------
+This neutron star plot is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 3 of
+the License, or (at your option) any later version.
 
+This neutron star plot is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this neutron star plot. If not, see
+<http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------
 """
 
 import math
@@ -42,7 +42,7 @@ def default_plot(lmar=0.14,bmar=0.12,rmar=0.04,tmar=0.04):
     plot.rc('text',usetex=True)
     plot.rc('font',family='serif')
     plot.rcParams['lines.linewidth']=0.5
-    fig=plot.figure(1,figsize=(6.0,6.0))
+    fig=plot.figure(1,figsize=(8.0,8.0))
     fig.set_facecolor('white')
     ax=plot.axes([lmar,bmar,1.0-lmar-rmar,1.0-tmar-bmar])
     ax.minorticks_on()
@@ -62,7 +62,7 @@ r = a b / sqrt( (b*cos(t))^2 + (a*sin(t))^2 )
 def cutaway(factor,cname):
     # Number of points per arc
     N2=100
-    # Upper left part
+    # Upper left part, from pi/2 to pi
     x=[]
     top_y=[]
     bot_y=[]
@@ -79,7 +79,7 @@ def cutaway(factor,cname):
         else:
             bot_y.append(0.5+r*cos(angle))
         ax.fill_between(x,bot_y,top_y,facecolor=cname,lw=0,zorder=2)
-    # Upper right part
+    # Upper right part, from 0 to pi/2
     x=[]
     top_y=[]
     bot_y=[]
@@ -95,7 +95,7 @@ def cutaway(factor,cname):
         else:
             bot_y.append(0.5+r*sin(-angle))
         ax.fill_between(x,bot_y,top_y,facecolor=cname,lw=0,zorder=2)
-    # Lower part
+    # Lower part, from 5*pi/4 to 15*pi/8
     x=[]
     top_y=[]
     bot_y=[]
@@ -112,13 +112,14 @@ def cutaway(factor,cname):
             top_y.append(0.5+r*cos(angle))
         ax.fill_between(x,bot_y,top_y,facecolor=cname,lw=0,zorder=2)
 
+# Initialize the plot, and make sure the limits are from (0,0) to (1,1)
 def init():
-    # Initialize the plot, and make sure the limits are from (0,0) to (1,1)
     (fig,ax)=default_plot(0.0,0.0,0.0,0.0)
     plot.plot([0,0.01],[0,0.01],color='black',ls='-')
     plot.plot([0.99,1.0],[0.99,1.0],color='black',ls='-')
     return (fig,ax)
 
+# Form the base black background
 def bkgd(ax):
     # Black background
     bkgd=Rectangle((0,0),1,1)
@@ -153,8 +154,8 @@ def mag_field(ax):
     ang2=3*pi/4+0.1
     ax.arrow(0.5+0.2*cos(ang2),
              0.5+0.2*sin(ang2),
-             0.2*cos(ang2),
-             0.2*sin(ang2),
+             0.23*cos(ang2),
+             0.23*sin(ang2),
              head_width=0.01,head_length=0.03,color='cyan',
              zorder=2)
     ax.arrow(0.5+0.3*cos(ang2+pi),
@@ -163,9 +164,12 @@ def mag_field(ax):
              0.1*sin(ang2+pi),
              head_width=0.01,head_length=0.03,color='cyan',
              zorder=2)
+    bkgdb=Rectangle((0.04,0.68),0.26,0.07,zorder=3)
+    bkgdb.set_facecolor('black')
+    ax.add_artist(bkgdb)
     ax.text(0.17,0.72,r'$B\sim 10^{7-16}~$G',
             fontsize=24,color='cyan',va='center',
-            ha='center')
+            ha='center',zorder=4)
 
 def base_star(ax):
     # Base star
@@ -195,9 +199,12 @@ def rotation(ax):
              0.07*sin(ang3+pi),
              head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
              zorder=2)
-    ax.text(0.25,0.84,r'$\omega=$?$-720~$Hz',
+    bkgdb=Rectangle((0.085,0.80),0.33,0.07,zorder=3)
+    bkgdb.set_facecolor('black')
+    ax.add_artist(bkgdb)
+    ax.text(0.25,0.84,r'$\omega=0.1-720~$Hz',
             fontsize=24,color=(0.2,0.8,0.2),va='center',
-            ha='center')
+            ha='center',zorder=4)
 
 def axes(ax):
     # axes
@@ -208,7 +215,7 @@ def axes(ax):
     ax.add_artist(liney)
     linez=Line2D([0.5,0.41],[0.5,0.41],color='black',ls='-',lw=1.5)
     ax.add_artist(linez)
-    ax.text(0.51,0.44,'R=10--13 km',rotation=-20,fontsize=20)
+    ax.text(0.51,0.44,r'$R{\approx}10-13$ km',rotation=-22.5,fontsize=20)
 
 def cut_labels(ax):
     line1=Line2D([0.58,0.68],[0.78,0.93],color=atmos_color,ls='-',lw=1.5)
@@ -251,25 +258,25 @@ def pasta_box(ax):
     bkgd5=Rectangle((0.21,0.01),0.2,0.3,zorder=3,lw=0)
     bkgd5.set_facecolor(neutron_color)
     ax.add_artist(bkgd5)
-    ax.text(0.45,0.12,'Core',fontsize=16,color='black',rotation='90',
+    ax.text(0.45,0.12,'Core',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.05,0.12,'Outer',fontsize=16,color='black',rotation='90',
+    ax.text(0.05,0.12,'Outer',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.09,0.12,'Crust',fontsize=16,color='black',rotation='90',
+    ax.text(0.09,0.12,'Crust',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.20,0.12,'neutron drip',fontsize=12,color='black',rotation='90',
+    ax.text(0.20,0.12,'neutron drip',fontsize=16,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.25,0.12,'Inner',fontsize=16,color='black',rotation='90',
+    ax.text(0.25,0.12,'Inner',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.29,0.12,'Crust',fontsize=16,color='black',rotation='90',
+    ax.text(0.29,0.12,'Crust',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.38,0.12,'Pasta',fontsize=16,color='black',rotation='90',
+    ax.text(0.38,0.12,'Pasta',fontsize=20,color='black',rotation='90',
             va='center',ha='center',zorder=5)
-    ax.text(0.08,0.24,'g/cm$^{3}$:',fontsize=16,color='black',
+    ax.text(0.08,0.24,'g/cm$^{3}$:',fontsize=20,color='black',
             va='bottom',ha='center',zorder=5)
-    ax.text(0.18,0.25,'$10^{11}$',fontsize=16,color='black',
+    ax.text(0.18,0.25,'$10^{11}$',fontsize=20,color='black',
             va='bottom',ha='center',zorder=5)
-    ax.text(0.39,0.25,'$10^{14}$',fontsize=16,color='black',
+    ax.text(0.39,0.25,'$10^{14}$',fontsize=20,color='black',
             va='bottom',ha='center',zorder=5)
     for j in range(0,20):
         for i in range(0,j+2):
