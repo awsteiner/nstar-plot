@@ -31,7 +31,6 @@ from math import sin
 from math import sqrt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import Rectangle
-from matplotlib.lines import Line2D
 from pylab import rand
 import matplotlib.pyplot as plot
 
@@ -66,14 +65,13 @@ class nstar_plot:
         plot.rc('font',family='serif')
         plot.rcParams['lines.linewidth']=0.5
         self.fig=plot.figure(1,figsize=(8.0,8.0))
-        self.fig.set_facecolor('white')
         self.ax=plot.axes([lmar,bmar,1.0-lmar-rmar,1.0-tmar-bmar])
-        self.ax.minorticks_on()
-        self.ax.tick_params('both',length=12,width=1,which='major')
-        self.ax.tick_params('both',length=5,width=1,which='minor')
         plot.grid(False)
 
-    # Initialize the plot, and make sure the limits are from (0,0) to (1,1)
+    """
+    Initialize the plot, and make sure the limits are from (0,0) 
+    to (1,1) by plotting a couple small lines.
+    """
     def init(self):
         self.default_plot(0.0,0.0,0.0,0.0)
         plot.plot([0,0.01],[0,0.01],color=self.bkgd_color,ls='-')
@@ -109,8 +107,7 @@ class nstar_plot:
     
     This is a pure dipole field given by 
     
-    3 \vec{r} (m dot r)/r^5 - \vec{m}/r^3
-    
+    \vec{B} = 3 \vec{r} (m dot r)/r^5 - \vec{m}/r^3
     """
     def mag_field(self,ord):
         mx=0.5
@@ -145,8 +142,17 @@ class nstar_plot:
                  0.1*sin(ang2+self.pi),
                  head_width=0.01,head_length=0.03,color='cyan',
                  zorder=ord)
-        # Label for B field magnitude
-        self.ax.text(0.17,0.72,r'$B\sim 10^{7-16}~\mathrm{G}$',
+        """
+        Label for B field magnitude
+        
+        B=2e15 for SGR 1806-20 from Woods et al. (2006),
+        http://dx.doi.org/10.1086/507459 .
+
+        B=10^7 is estimate from P-Pdot diagrams, e.g.
+        from arxiv.org/abs/1103.4538 
+        """
+        self.ax.text(0.17,0.72,
+                     r'$B_{\mathrm{surf}}\sim 10^{7-15}~\mathrm{G}$',
                      fontsize=24,color='cyan',va='center',
                      ha='center',zorder=ord+1,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
@@ -158,7 +164,6 @@ class nstar_plot:
     r = a b / sqrt( (b*cos(t))^2 + (a*sin(t))^2 )
     where a is the radius in the x direction and b is the radius in
     the y direction.
-    
     """
     def cutaway(self,factor,cname,ord):
         # Number of points per arc
@@ -217,13 +222,17 @@ class nstar_plot:
 
     """
     Arrows and label for rotation
+
+    716 Hz from Hessels et al. (2006), 
+    http://dx.doi.org/10.1126/science.1123430 .
+
+    1/11.79 Hz from Rim and Kaspi (2014),
+    http://dx.doi.org/10.1088/0004-637X/784/1/37 .
     """
     def rotation(self,ord):
         ang3=3*self.pi/4-0.1
-        self.ax.arrow(0.5+0.2*cos(ang3),
-                 0.5+0.2*sin(ang3),
-                 0.15*cos(ang3),
-                 0.15*sin(ang3),
+        self.ax.arrow(0.5+0.2*cos(ang3),0.5+0.2*sin(ang3),
+                      0.15*cos(ang3),0.15*sin(ang3),
                       head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
                       zorder=ord)
         self.ax.arrow(0.5+0.3*cos(ang3+self.pi),
@@ -232,7 +241,7 @@ class nstar_plot:
                       0.07*sin(ang3+self.pi),
                       head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
                       zorder=ord)
-        self.ax.text(0.25,0.84,r'$\omega=0.1-720~\mathrm{Hz}$',
+        self.ax.text(0.25,0.84,r'$\mathrm{freq.}=0.1-720~\mathrm{Hz}$',
                      fontsize=24,color=(0.2,0.8,0.2),va='center',
                      ha='center',zorder=ord+1,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
@@ -242,16 +251,13 @@ class nstar_plot:
     """
     def cutaway_axes(self,ord):
         # axes
-        linex=Line2D([0.5,0.5+0.21*cos(15*self.pi/8)],
-                     [0.5,0.5+0.21*sin(15*self.pi/8)],
-                     color='black',ls='-',lw=1.5,zorder=ord)
-        self.ax.add_artist(linex)
-        liney=Line2D([0.5,0.5],[0.5,0.8],color='black',ls='-',lw=1.5,
-                     zorder=ord)
-        self.ax.add_artist(liney)
-        linez=Line2D([0.5,0.41],[0.5,0.41],color='black',ls='-',lw=1.5,
-                     zorder=ord)
-        self.ax.add_artist(linez)
+        plot.plot([0.5,0.5+0.21*cos(15*self.pi/8)],
+                  [0.5,0.5+0.21*sin(15*self.pi/8)],
+                  color='black',ls='-',lw=1.5,zorder=ord)
+        plot.plot([0.5,0.5],[0.5,0.8],color='black',ls='-',lw=1.5,
+                  zorder=ord)
+        plot.plot([0.5,0.41],[0.5,0.41],color='black',ls='-',lw=1.5,
+                  zorder=ord)
         self.ax.text(0.51,0.44,r'$R{\approx}10-13$ km',
                      rotation=-22.5,fontsize=20,zorder=ord)
 
@@ -259,7 +265,7 @@ class nstar_plot:
     Labels for the cutaway
     """
     def cut_labels(self,ord):
-        self.ax.text(0.69,0.95,'Atmosphere',fontsize=20,
+        self.ax.text(0.69,0.95,'Atmos.: H, He, C',fontsize=20,
                      color=self.atmos_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.ax.text(0.69,0.90,'Outer Crust',fontsize=20,
@@ -280,30 +286,24 @@ class nstar_plot:
         self.ax.text(0.69,0.65,'Inner Core: ?',fontsize=20,
                      color=self.inner_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        line1=Line2D([0.58,0.68],[0.78,0.95],
+        plot.plot([0.58,0.68],[0.78,0.95],
                      color=self.atmos_color,ls='-',lw=1.5,zorder=ord)
-        self.ax.add_artist(line1)
-        line2=Line2D([0.59,0.68],[0.74,0.82],
+        plot.plot([0.59,0.68],[0.74,0.82],
                      color=self.crust_color,ls='-',lw=1.5,zorder=ord)
-        self.ax.add_artist(line2)
-        line3=Line2D([0.62,0.68],[0.68,0.70],
+        plot.plot([0.62,0.68],[0.68,0.70],
                      color=self.core_color,ls='-',lw=1.5,zorder=ord)
-        self.ax.add_artist(line3)
-        line4=Line2D([0.60,0.68],[0.51,0.65],
+        plot.plot([0.60,0.68],[0.51,0.65],
                      color=self.inner_color,ls='-',lw=1.5,zorder=ord)
-        self.ax.add_artist(line4)
 
     """
     Box showing crust
     """
     def crust_box(self,ord):
         # Dashed lines to show zoom
-        line5=Line2D([0.01,0.408],[0.31,0.5],color='white',
-                     ls='--',lw=1.5,zorder=ord)
-        self.ax.add_artist(line5)
-        line6=Line2D([0.51,0.412],[0.31,0.5],color='white',
-                     ls='--',lw=1.5,zorder=ord)
-        self.ax.add_artist(line6)
+        plot.plot([0.01,0.408],[0.31,0.5],color='white',
+                  ls='--',lw=1.5,zorder=ord)
+        plot.plot([0.51,0.412],[0.31,0.5],color='white',
+                  ls='--',lw=1.5,zorder=ord)
         # Boxes to provide background
         box_bkgd1=Rectangle((0.01,0.01),0.5,0.3,zorder=ord,
                             color='white',lw=1.5)
@@ -379,6 +379,12 @@ class nstar_plot:
         self.ax.text(0.39,0.25,'$10^{14}$',fontsize=20,color='black',
                      va='bottom',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.core_color,lw=0))
+        # Crust thickness label
+        self.ax.text(0.26,0.335,
+                     '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
+                     fontsize=20,color='white',
+                     va='center',ha='center',zorder=13,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
     Box for various properties
@@ -416,7 +422,8 @@ class nstar_plot:
     Plot title on upper left
     """
     def title(self,ord):
-        self.ax.text(0.05,0.95,'A neutron star',fontsize=30,color=self.text_color,
+        self.ax.text(0.05,0.95,'A neutron star',
+                     fontsize=30,color=self.text_color,
                      va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
@@ -436,11 +443,6 @@ class nstar_plot:
         self.cutaway_axes(9)
         self.cut_labels(9)
         self.crust_box(10)
-        self.ax.text(0.26,0.335,
-                     '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
-                     fontsize=20,color='white',
-                     va='center',ha='center',zorder=13,
-                     bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.mass_limits(13)
         self.title(15)
         
