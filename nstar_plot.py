@@ -41,6 +41,8 @@ Class definition
 class nstar_plot:
 
     pi=math.acos(-1)
+    # Default text color
+    text_color='white'
     # Background color
     bkgd_color='black'
     # Color for atmosphere
@@ -80,9 +82,9 @@ class nstar_plot:
     # Form the base black background
     def bkgd(self):
         # Black background
-        bkgd=Rectangle((0,0),1,1)
-        bkgd.set_facecolor(self.bkgd_color)
-        self.ax.add_artist(bkgd)
+        main_bkgd=Rectangle((0,0),1,1)
+        main_bkgd.set_facecolor(self.bkgd_color)
+        self.ax.add_artist(main_bkgd)
 
     """
     The star's surface, red and yellow, created from a series of 
@@ -144,12 +146,10 @@ class nstar_plot:
                  head_width=0.01,head_length=0.03,color='cyan',
                  zorder=ord)
         # Label for B field magnitude
-        bkgdb=Rectangle((0.04,0.68),0.26,0.07,zorder=ord+1)
-        bkgdb.set_facecolor('black')
-        self.ax.add_artist(bkgdb)
-        self.ax.text(0.17,0.72,r'$B\sim 10^{7-16}~$G',
+        self.ax.text(0.17,0.72,r'$B\sim 10^{7-16}~\mathrm{G}$',
                      fontsize=24,color='cyan',va='center',
-                     ha='center',zorder=ord+2)
+                     ha='center',zorder=ord+1,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
     Cutaway function
@@ -215,6 +215,9 @@ class nstar_plot:
                 top_y.append(0.5+r*cos(angle))
         self.ax.fill_between(x,bot_y,top_y,facecolor=cname,lw=0,zorder=ord)
 
+    """
+    Arrows and label for rotation
+    """
     def rotation(self,ord):
         ang3=3*self.pi/4-0.1
         self.ax.arrow(0.5+0.2*cos(ang3),
@@ -229,12 +232,10 @@ class nstar_plot:
                       0.07*sin(ang3+self.pi),
                       head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
                       zorder=ord)
-        bkgdb=Rectangle((0.085,0.80),0.33,0.07,zorder=ord+1)
-        bkgdb.set_facecolor(self.bkgd_color)
-        self.ax.add_artist(bkgdb)
-        self.ax.text(0.25,0.84,r'$\omega=0.1-720~$Hz',
+        self.ax.text(0.25,0.84,r'$\omega=0.1-720~\mathrm{Hz}$',
                      fontsize=24,color=(0.2,0.8,0.2),va='center',
-                     ha='center',zorder=ord+2)
+                     ha='center',zorder=ord+1,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
     Axes for the cutaway
@@ -258,110 +259,166 @@ class nstar_plot:
     Labels for the cutaway
     """
     def cut_labels(self,ord):
-        line1=Line2D([0.58,0.68],[0.78,0.93],
+        self.ax.text(0.69,0.95,'Atmosphere',fontsize=20,
+                     color=self.atmos_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.90,'Outer Crust',fontsize=20,
+                     color=self.crust_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.85,'(Z,N)+e',fontsize=20,
+                     color=self.crust_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.80,'Inner crust',fontsize=20,
+                     color=self.crust_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.75,'(Z,N)+e+n',fontsize=20,
+                     color=self.crust_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.70,'Outer Core: n+p+e',fontsize=20,
+                     color=self.core_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.69,0.65,'Inner Core: ?',fontsize=20,
+                     color=self.inner_color,va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        line1=Line2D([0.58,0.68],[0.78,0.95],
                      color=self.atmos_color,ls='-',lw=1.5,zorder=ord)
         self.ax.add_artist(line1)
-        self.ax.text(0.69,0.92,'Atmosphere',fontsize=20,
-                     color=self.atmos_color,va='center',ha='left',zorder=ord)
-        line2=Line2D([0.59,0.68],[0.74,0.87],
+        line2=Line2D([0.59,0.68],[0.74,0.82],
                      color=self.crust_color,ls='-',lw=1.5,zorder=ord)
         self.ax.add_artist(line2)
-        self.ax.text(0.69,0.87,'Crust',fontsize=20,
-                     color=self.crust_color,va='center',ha='left',zorder=ord)
-        line3=Line2D([0.62,0.68],[0.68,0.81],
+        line3=Line2D([0.62,0.68],[0.68,0.70],
                      color=self.core_color,ls='-',lw=1.5,zorder=ord)
         self.ax.add_artist(line3)
-        self.ax.text(0.69,0.81,'Outer Core',fontsize=20,
-                     color=self.core_color,va='center',ha='left',zorder=ord)
-        line4=Line2D([0.60,0.68],[0.51,0.75],
+        line4=Line2D([0.60,0.68],[0.51,0.65],
                      color=self.inner_color,ls='-',lw=1.5,zorder=ord)
         self.ax.add_artist(line4)
-        self.ax.text(0.69,0.75,'Inner Core',fontsize=20,
-                     color=self.inner_color,va='center',ha='left',zorder=ord)
 
     """
     Box showing crust
     """
     def crust_box(self,ord):
-        # Boxes to provide background
-        box_bkgd=Rectangle((0.01,0.01),0.5,0.3,zorder=ord,color='white',lw=1.5)
-        self.ax.add_artist(box_bkgd)
-        line5=Line2D([0.01,0.408],[0.31,0.5],color='white',ls='--',lw=1.5)
+        # Dashed lines to show zoom
+        line5=Line2D([0.01,0.408],[0.31,0.5],color='white',
+                     ls='--',lw=1.5,zorder=ord)
         self.ax.add_artist(line5)
-        line6=Line2D([0.51,0.412],[0.31,0.5],color='white',ls='--',lw=1.5)
+        line6=Line2D([0.51,0.412],[0.31,0.5],color='white',
+                     ls='--',lw=1.5,zorder=ord)
         self.ax.add_artist(line6)
-        bkgd3=Rectangle((0.41,0.01),0.1,0.3,zorder=ord,lw=0)
-        bkgd3.set_facecolor(self.core_color)
-        self.ax.add_artist(bkgd3)
-        bkgd4=Rectangle((0.01,0.01),0.2,0.3,zorder=ord,lw=0)
-        bkgd4.set_facecolor(self.crust_color)
-        self.ax.add_artist(bkgd4)
-        bkgd5=Rectangle((0.21,0.01),0.2,0.3,zorder=ord,lw=0)
-        bkgd5.set_facecolor(self.neutron_color)
-        self.ax.add_artist(bkgd5)
-        # Nuclei and pasta
+        # Boxes to provide background
+        box_bkgd1=Rectangle((0.01,0.01),0.5,0.3,zorder=ord,
+                            color='white',lw=1.5)
+        self.ax.add_artist(box_bkgd1)
+        box_bkgd2=Rectangle((0.41,0.01),0.1,0.3,zorder=ord,lw=0)
+        box_bkgd2.set_facecolor(self.core_color)
+        self.ax.add_artist(box_bkgd2)
+        box_bkgd3=Rectangle((0.01,0.01),0.2,0.3,zorder=ord,lw=0)
+        box_bkgd3.set_facecolor(self.crust_color)
+        self.ax.add_artist(box_bkgd3)
+        box_bkgd4=Rectangle((0.21,0.01),0.2,0.3,zorder=ord,lw=0)
+        box_bkgd4.set_facecolor(self.neutron_color)
+        self.ax.add_artist(box_bkgd4)
+        # Nuclei
         for j in range(0,20):
+            shift=rand()*0.02
+            if j%2==0:
+                shift=shift+0.15/float(j+2)
             for i in range(0,j+2):
-                nuc1=Ellipse((0.02+float(j)*0.02,rand()*0.3+0.01),0.01,0.01,
-                             zorder=ord+1,lw=0)
+                y=0.3*float(i)/float(j+2)+0.01+shift
+                if y>0.30:
+                    y=0.30
+                nuc1=Ellipse((0.02+float(j)*0.02,y),
+                             0.01,0.01,zorder=ord+1,lw=0)
                 nuc1.set_facecolor(self.core_color)
                 self.ax.add_artist(nuc1)
+        # Pasta
         for i in range(0,60):
-            pasta1=Ellipse((0.40-0.1*rand()*rand(),rand()*0.28+0.02),0.01,0.04,
-                           angle=rand()*360,zorder=ord+1,lw=0)
+            y=0.3*float(i)/60.0
+            if (y<0.03):
+                y=0.03
+            pasta1=Ellipse((0.40-0.1*rand()*rand(),y),
+                           0.01,0.04,angle=rand()*360,zorder=ord+1,lw=0)
             pasta1.set_facecolor(self.core_color)
             self.ax.add_artist(pasta1)
+        # Thinner pasta
         for i in range(0,20):
-            pasta2=Ellipse((0.41-0.02*rand()*rand(),rand()*0.28+0.02),0.01,0.06,
-                           angle=rand()*30,zorder=ord+1,lw=0)
+            y=0.3*float(i)/20.0
+            if (y<0.04):
+                y=0.04
+            pasta2=Ellipse((0.415-0.04*rand()*rand(),y),
+                           0.01,0.06,angle=rand()*60-30,zorder=ord+1,lw=0)
             pasta2.set_facecolor(self.core_color)
             self.ax.add_artist(pasta2)
         # Labels
-        self.ax.text(0.45,0.12,'Core',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.05,0.12,'Outer',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.09,0.12,'Crust',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.20,0.12,'neutron drip',fontsize=16,color='black',
-                rotation='90',va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.25,0.12,'Inner',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.29,0.12,'Crust',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
-        self.ax.text(0.38,0.12,'Pasta',fontsize=20,color='black',rotation='90',
-                va='center',ha='center',zorder=ord+2)
+        self.ax.text(0.05,0.12,'Outer',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+        self.ax.text(0.09,0.12,'Crust',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+        self.ax.text(0.21,0.12,'neutron drip',fontsize=16,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+        self.ax.text(0.25,0.12,'Inner',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.neutron_color,lw=0))
+        self.ax.text(0.29,0.12,'Crust',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.neutron_color,lw=0))
+        self.ax.text(0.38,0.12,'Pasta',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.core_color,lw=0))
+        self.ax.text(0.45,0.12,'Core',fontsize=20,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2)
+        # Density labels
         self.ax.text(0.08,0.24,'g/cm$^{3}$:',fontsize=20,color='black',
-                va='bottom',ha='center',zorder=ord+2)
+                     va='bottom',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
         self.ax.text(0.18,0.25,'$10^{11}$',fontsize=20,color='black',
-                va='bottom',ha='center',zorder=ord+2)
+                     va='bottom',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
         self.ax.text(0.39,0.25,'$10^{14}$',fontsize=20,color='black',
-                va='bottom',ha='center',zorder=ord+2)
+                     va='bottom',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.core_color,lw=0))
 
     """
-    Box providing mass limits
+    Box for various properties
     """
     def mass_limits(self,ord):
-        bkgdm=Rectangle((0.71,0.04),0.27,0.13,zorder=ord)
-        bkgdm.set_facecolor(self.bkgd_color)
-        self.ax.add_artist(bkgdm)
-        self.ax.text(0.775,0.125,
-                     r'$M_{\mathrm{min}}{\approx}1\mathrm{M}_{\odot}$',
-                     fontsize=20,color='white',va='center',
-                     ha='left',zorder=ord+1)
-        self.ax.text(0.775,0.075,r'$M_{\mathrm{max}}>2\mathrm{M}_{\odot}$',
-                     fontsize=20,color='white',va='center',
-                     ha='left',zorder=ord+1)
+        self.ax.text(0.58,0.225,
+                     (r'$\lambda=(0.2-6){\times}10^{36}~'+
+                      r'\mathrm{g}~\mathrm{cm}^2~\mathrm{s}^2$'),
+                     fontsize=20,color=self.text_color,va='center',
+                     ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.58,0.175,
+                     r'$I=50-200~\mathrm{M}_{\odot}~\mathrm{km}^2$',
+                     fontsize=20,color=self.text_color,va='center',
+                     ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.58,0.125,(r'$\varepsilon_{\mathrm{core}}='+
+                                 r'500-1600~\mathrm{MeV}/\mathrm{fm}^{3}$'),
+                     fontsize=20,color=self.text_color,va='center',
+                     ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.58,0.075,(r'$n_{B,\mathrm{max}}='+
+                                 r'0.6-1.3~\mathrm{fm}^{-3}$'),
+                     fontsize=20,color=self.text_color,va='center',
+                     ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.ax.text(0.58,0.025,
+                     (r'$M_{\mathrm{min}}{\approx}1\mathrm{M}_{\odot}$ ;'+
+                      r' $M_{\mathrm{max}}>2\mathrm{M}_{\odot}$'),
+                     fontsize=20,color=self.text_color,va='center',
+                     ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
             
     """
     Plot title on upper left
     """
     def title(self,ord):
-        bkgd2=Rectangle((0.04,0.905),0.485,0.075,zorder=ord)
-        bkgd2.set_facecolor(self.bkgd_color)
-        self.ax.add_artist(bkgd2)
-        self.ax.text(0.05,0.95,'A neutron star',fontsize=30,color='white',
-                     va='center',ha='left',zorder=ord+1)
+        self.ax.text(0.05,0.95,'A neutron star',fontsize=30,color=self.text_color,
+                     va='center',ha='left',zorder=ord,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """ -------------------------------------------------------------------
     Main plotting function
@@ -373,14 +430,19 @@ class nstar_plot:
         self.mag_field(2)
         self.rotation(2)
         self.cutaway(1.0,self.atmos_color,5)
-        self.cutaway(0.98,self.crust_color,5)
-        self.cutaway(0.9,self.core_color,5)
-        self.cutaway(0.5,self.inner_color,5)
-        self.cutaway_axes(6)
-        self.cut_labels(6)
-        self.crust_box(7)
-        self.mass_limits(10)
-        self.title(12)
+        self.cutaway(0.98,self.crust_color,6)
+        self.cutaway(0.9,self.core_color,7)
+        self.cutaway(0.5,self.inner_color,8)
+        self.cutaway_axes(9)
+        self.cut_labels(9)
+        self.crust_box(10)
+        self.ax.text(0.26,0.335,
+                     '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
+                     fontsize=20,color='white',
+                     va='center',ha='center',zorder=13,
+                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+        self.mass_limits(13)
+        self.title(15)
         
         plot.savefig('nstar_plot.eps')
         """
