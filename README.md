@@ -5,3 +5,5 @@ Based, in part, on Dany Page's excellent work at
 
 ![The neutron star plot](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/nstar_plot.png)
 
+![Plot relating EOS and M-R curve](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/eos_mvsr.png)
+
