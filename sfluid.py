@@ -1,4 +1,5 @@
-"""-------------------------------------------------------------------
+"""
+-------------------------------------------------------------------
 
 Copyright (C) 2016, Andrew W. Steiner
 
@@ -6,18 +7,18 @@ This python code utilizes the superconducting material properties data
 compiled by P.J. Ray at
 http://dx.doi.org/10.6084/m9.figshare.2075680.v2 (see below)
 
-This plot is free software; you can redistribute it
+This program is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 3 of
 the License, or (at your option) any later version.
 
-This plot is distributed in the hope that it will be
+This program is distributed in the hope that it will be
 useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this plot. If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -------------------------------------------------------------------
 
@@ -84,10 +85,10 @@ dat=[['Hg',0.299320,10.859729,1,1],
      ['SrFFeAs',7.800000,132.579186,1,1],
      ['FeSe film',9,150,1,1],
      ['SmOFFeAs',7.600000,107.500000,1,1],
-     ['Cs3C60 @ 1.4~GPa',5.061224,102.262443,1,1.25],
+     [r'Cs$_3$C$_60$ @ 1.4~GPa',5.061224,102.262443,1,1.25],
      ['HgBaCaCuO @ 30~GPa',5.047619,173.755656,0.985,1.1],
-     ['Li @ 33GPa',6.421769,41.628959,0.993,0.8],
-     [r'H$_2$S @ 155GPa',9,203,1,1.25]]
+     ['Li @ 33~GPa',6.421769,41.628959,0.993,0.8],
+     [r'H$_2$S @ 155~GPa',9,203,1,1.25]]
 
 # Initial figure setup
 
@@ -201,10 +202,15 @@ ax.text(2009*x_scale,5.0e8*y_scale,r'$^{3}P_2$ n',
 plot.semilogy(1958,3.5e10,marker='o',mfc='green',mew=0)
 ax.text(1960*x_scale,3.0e10*y_scale,r'(Z,N)',
         fontsize=12,va='center',ha='center')
+plot.semilogy(1984,1.6e10,marker='o',mfc='green',mew=0)
+ax.text(1983*x_scale,1.6e10*y_scale,r'uds',
+        fontsize=12,va='center',ha='center')
 
 ax.text(1965,7.5e10,'Bohr and Mottelson (1957)',
         fontsize=12,va='center',ha='right')
-ax.text(2005,1.0e10,'Brown and Cumming (2009)',
+ax.text(2007,7.0e9,'Brown and Cumming (2009)',
+        fontsize=12,va='center',ha='right')
+ax.text(2025,4.0e10,'Bailin and Love (1984)',
         fontsize=12,va='center',ha='right')
 ax.text(2010,1.3e9,'Page et al. (2009)',
         fontsize=12,va='center',ha='right')
