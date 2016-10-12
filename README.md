@@ -7,3 +7,5 @@ Based, in part, on Dany Page's excellent work at
 
 ![Plot relating EOS and M-R curve](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/eos_mvsr.png)
 
+![History of superconductivity](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/sfluid3.png)
+
