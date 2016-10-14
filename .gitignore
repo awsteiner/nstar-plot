@@ -1,3 +1,6 @@
+__pycache__
 crust_plot
 crust_plot.o
 .ipynb_checkpoints
+nstar_plot*.eps
+crust_plot*.eps
