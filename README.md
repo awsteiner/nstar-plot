@@ -7,6 +7,8 @@ Neutron star plot based, in part, on Dany Page's excellent work at
 
 ![Plot relating EOS and M-R curve](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/eos_mvsr.png)
 
+![Neutron star crust](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/crust_plot.png)
+
 ![History of superconductivity](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/sfluid3.png)
 
 History of superconductivity based on P.J. Ray's data from

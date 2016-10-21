@@ -32,9 +32,8 @@ using namespace std;
 using namespace o2scl;
 using namespace o2scl_hdf;
 
-/** \brief A mini-molecular dynamics simulation
-    which minimizes Coulomb repulsion (currently assumes
-    equal charge)
+/** \brief A mini-molecular dynamics simulation which minimizes
+    Coulomb repulsion (currently assumes equal charge)
 */
 class mini_md {
 
