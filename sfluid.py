@@ -152,8 +152,12 @@ for i in range(0,len(dat)):
         ax.text(time(dat[i][1])*x_scale*dat[i][3],
                 tptr(dat[i][2])*y_scale*dat[i][4],dat[i][0],
                 fontsize=12,va='center',ha='center')
-        plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
-                      marker='o',mfc='red',mew=0)
+        if i==len(dat)-1:
+            plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
+                          marker='o',mec='red',mfc='none',mew=0)
+        else:
+            plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
+                          marker='o',mfc='red',mew=0)
     else:
         plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
                       marker='o',mfc='blue',mew=0)
@@ -181,8 +185,12 @@ plot.ylim([2.0e-1,4.0e11])
 
 for i in range(0,len(dat)):
     if i>=len(dat)-4:
-        plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
-                      marker='o',mfc='red',mew=0)
+        if i==len(dat)-1:
+            plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
+                          marker='o',mec='red',mfc='none',mew=1)
+        else:
+            plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
+                          marker='o',mfc='red',mew=0)
     else:
         plot.semilogy(time(dat[i][1]),tptr(dat[i][2]),
                       marker='o',mfc='blue',mew=0)
@@ -202,15 +210,15 @@ ax.text(2009*x_scale,5.0e8*y_scale,r'$^{3}P_2$ n',
 plot.semilogy(1958,3.5e10,marker='o',mfc='green',mew=0)
 ax.text(1960*x_scale,3.0e10*y_scale,r'(Z,N)',
         fontsize=12,va='center',ha='center')
-plot.semilogy(1984,1.6e10,marker='o',mfc='green',mew=0)
-ax.text(1983*x_scale,1.6e10*y_scale,r'uds',
+plot.semilogy(1977,1.6e10,marker='o',mec='purple',mfc='none',mew=1)
+ax.text(1977*x_scale,1.6e10*y_scale,r'uds',
         fontsize=12,va='center',ha='center')
 
 ax.text(1965,7.5e10,'Bohr and Mottelson (1957)',
         fontsize=12,va='center',ha='right')
 ax.text(2007,7.0e9,'Brown and Cumming (2009)',
         fontsize=12,va='center',ha='right')
-ax.text(2025,4.0e10,'Bailin and Love (1984)',
+ax.text(2007,3.4e10,'Barrois (1977)',
         fontsize=12,va='center',ha='right')
 ax.text(2010,1.3e9,'Page et al. (2009)',
         fontsize=12,va='center',ha='right')
