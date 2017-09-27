@@ -6,12 +6,12 @@ import matplotlib.patches as patches
 # box
 
 def box(x,y,Z,abbrev,name,mass,ax):
-    p=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=1)
+    p=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=0.5)
     ax.add_patch(p)
-#    ax.text(x,y+0.9,Z,ha='center',va='center',transform=ax.transAxes)
-#    ax.text(x,y+0.1,abbrev,ha='center',va='center',transform=ax.transAxes)
-#    ax.text(x,y-0.7,name,ha='center',va='center',transform=ax.transAxes)
-#    ax.text(x,y-0.9,mass,ha='center',va='center',transform=ax.transAxes)
+    ax.text(x-0.35,y+0.35,Z,ha='center',va='center',fontsize=5)
+    ax.text(x,y+0.08,abbrev,ha='center',va='center',fontsize=15)
+    ax.text(x,y-0.2,name,ha='center',va='center',fontsize=4)
+    ax.text(x,y-0.4,mass,ha='center',va='center',fontsize=5)
     
 # ----------------------------------------------------------------
 # Options 
@@ -114,7 +114,7 @@ px_cent=[Z_arr[i] for i in range(0,len(Z_arr))]
 py_cent=[Z_arr[i] for i in range(0,len(Z_arr))]
 
 ygap=0.5
-xgap=0
+xgap=2.5
 height=1
 
 for i in range(0,len(name_arr)):
@@ -176,8 +176,9 @@ plot.xlim([0,19])
 plot.ylim([0,10.5])
 
 for i in range(0,len(name_arr)):
-    box(px_cent[i],py_cent[i],Z_arr[i],abbrev_arr[i],name_arr[i],
+    box(px_cent[i],py_cent[i],str(Z_arr[i]),abbrev_arr[i],name_arr[i],
         wgt_arr[i],ax)
 
+plot.savefig('pt.pdf')    
 plot.show()
     

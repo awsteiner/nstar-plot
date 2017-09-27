@@ -65,7 +65,7 @@ Neon		gm m	Ne	10	20.1797 0.0006 20.180 0.0
 Neptunium	u u	Np	93	237 0 237 0
 Nickel		r r	Ni	28	58.6934 0.0004 58.693 0.0
 Niobium		s s	Nb	41	92.90637 0.00002 92.906 0.0
-Nitrogen	b b	nn	7	14.00643 14.00728 14.006 14.008
+Nitrogen	b b	N	7	14.00643 14.00728 14.006 14.008
 Nobelium	u u	No	102	259 0 259 0
 Osmium		g g	Os	76	190.23 0.03 190.23 0.03
 Oxygen		b b	O	8	15.99903 15.99977 15.999 16.000
@@ -107,7 +107,7 @@ Titanium	n n	Ti	22	47.867 (1) 47.867 0.0
 Tungsten	n n	W	74	183.84 (1) 183.84 0.0
 Oganesson	u u	Og	118	294 0 294 0
 Moscovium	u u	Mo	115	288 0 288 0
-Tennessine	u u	Tn	117	294 0 294 0
+Tennessine	u u	Ts	117	294 0 294 0
 Nihonium	u u	Nh	113	286 0 286 0
 Uranium		gm gm	U	92	238.02891 (3) 238.03 0.0
 Vanadium	n n	V	23	50.9415 (1) 50.942 0.0
