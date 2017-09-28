@@ -43,25 +43,26 @@ for i in range(0,len(df)):
         print('name:',name_arr[i],'Z:',Z_arr[i],'note:',note)
         print('old weight and error:',df[i][7],df[i][8])
     #
-    if long_errors:
-        if df[i][8][0]=='(':
-            last_digit=df[i][8][1]
-            # Count digits after decimal
-            dot_loc=df[i][7].find('.')
-            ndigits=df[i][7]-dot_loc-1
-            df[i][8]='0.'
-            for i in range(0,ndigits-1):
-                df[i][8]+=' '
-            df[i][8]+=last_digit
-    else:
-        if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            last_digit=df[i][8][len(df[i][8])-1]
-            df[i][8]='('+last_digit+')'
+    if note!='b' and note!='bm' and note!='v':
+        if long_errors:
+            if df[i][8][0]=='(':
+                last_digit=df[i][8][1]
+                # Count digits after decimal
+                dot_loc=df[i][7].find('.')
+                ndigits=df[i][7]-dot_loc-1
+                df[i][8]='0.'
+                for i in range(0,ndigits-1):
+                    df[i][8]+=' '
+                df[i][8]+=last_digit
+        else:
+            if df[i][8][0]!='(' and float(df[i][8])>0.0:
+                last_digit=df[i][8][len(df[i][8])-1]
+                df[i][8]='('+last_digit+')'
     #
     if debug:
         print('new err:',df[i][8])
     if note=='v':
-        wgt_arr.append(df[i][7]+','+df[i][8])
+        wgt_arr.append('['+df[i][7]+','+df[i][8]+']')
     elif note=='u':
         wgt_arr.append('['+df[i][7]+']')
     elif note=='g':
@@ -95,9 +96,9 @@ for i in range(0,len(df)):
         else:
             wgt_arr.append(df[i][7])
     elif note=='b':
-        wgt_arr.append('['+df[i][7]+' $ -- $ '+df[i][8]+']')
+        wgt_arr.append('['+df[i][7]+','+df[i][8]+']')
     elif note=='bm':
-        wgt_arr.append('['+df[i][7]+' $ -- $ '+df[i][8]+'] $^m$')
+        wgt_arr.append('['+df[i][7]+','+df[i][8]+']$^m$')
     elif note=='n':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
             wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8])
@@ -174,6 +175,7 @@ ax.tick_params('both',length=5,width=1,which='minor')
 plot.grid(False)
 plot.xlim([0,19])
 plot.ylim([0,10.5])
+plot.axis('off')
 
 for i in range(0,len(name_arr)):
     box(px_cent[i],py_cent[i],str(Z_arr[i]),abbrev_arr[i],name_arr[i],
