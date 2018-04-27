@@ -33,24 +33,14 @@ import matplotlib.pyplot as plot
 import numpy
 import os
 import urllib.request
-try:
-    import o2sclpy
-except ImportError:
-    urllib.request.urlretrieve
-    ('http://raw.githubusercontent.com/awsteiner/o2scl'+
-     '/master/python/__init__.py','o2sclpy.py')
-    try:
-        import o2sclpy
-    except:
-        raise ImportError('Could not import o2sclpy, even after download.')
+import o2sclpy
 from load_crust import load_crust
-print('Success.')
 
 # Internal code for parsing .bib and creating html
 if 0:
     os.system("btmanip -parse refs.bib -hay nstar_plot_refs.html")
 
-update_plot_files=True
+update_plot_files=False
 
 class nstar_plot(load_crust):
 
@@ -72,25 +62,20 @@ class nstar_plot(load_crust):
     # Figure object
     fig=0
     # Axis object
-    ax=0     
-
-    # Default plot function from O2scl
-    def default_plot(self,lmar=0.14,bmar=0.12,rmar=0.04,tmar=0.04):
-        plot.rc('text',usetex=True)
-        plot.rc('font',family='serif')
-        plot.rcParams['lines.linewidth']=0.5
-        self.fig=plot.figure(1,figsize=(8.0,8.0))
-        self.ax=plot.axes([lmar,bmar,1.0-lmar-rmar,1.0-tmar-bmar])
-        plot.grid(False)
+    ax=0
+    # Font scaling parameter (default 20)
+    font_scale=20
 
     """
     Initialize the plot, and make sure the limits are from (0,0) 
     to (1,1) by plotting a couple small lines.
     """
     def init(self):
-        self.default_plot(0.0,0.0,0.0,0.0)
-        plot.plot([0,0.01],[0,0.01],color=self.bkgd_color,ls='-')
-        plot.plot([0.99,1.0],[0.99,1.0],color=self.bkgd_color,ls='-')
+        (self.fig,self.ax)=o2sclpy.default_plot(0.0,0.0,0.0,0.0)
+        plot.xlim([0,1])
+        plot.ylim([0,1])
+        #plot.plot([0,0.01],[0,0.01],color=self.bkgd_color,ls='-')
+        #plot.plot([0.99,1.0],[0.99,1.0],color=self.bkgd_color,ls='-')
 
     # Form the base black background
     def bkgd(self):
@@ -145,18 +130,18 @@ class nstar_plot(load_crust):
         # Arrow for magnetic north
         ang2=3*self.pi/4+0.1
         self.ax.arrow(0.5+0.2*cos(ang2),
-                 0.5+0.2*sin(ang2),
-                 0.23*cos(ang2),
-                 0.23*sin(ang2),
-                 head_width=0.01,head_length=0.03,color='cyan',
-                 zorder=ord)
+                      0.5+0.2*sin(ang2),
+                      0.23*cos(ang2),
+                      0.23*sin(ang2),
+                      head_width=0.01,head_length=0.03,color='cyan',
+                      zorder=ord)
         # Arrow for magnetic south
-        self.ax.arrow(0.5+0.3*cos(ang2+self.pi),
-                 0.5+0.3*sin(ang2+self.pi),
-                 0.1*cos(ang2+self.pi),
-                 0.1*sin(ang2+self.pi),
-                 head_width=0.01,head_length=0.03,color='cyan',
-                 zorder=ord)
+        self.ax.arrow(0.5+0.4*cos(ang2+self.pi),
+                      0.5+0.4*sin(ang2+self.pi),
+                      -0.1/1.414*cos(ang2+self.pi),
+                      -0.1/1.414*sin(ang2+self.pi),
+                      head_width=0.01,head_length=0.03,color='cyan',
+                      zorder=ord)
         """
         Label for B field magnitude
         
@@ -166,9 +151,9 @@ class nstar_plot(load_crust):
         B=10^7 is estimate from P-Pdot diagrams, e.g.
         from arxiv.org/abs/1103.4538 
         """
-        self.ax.text(0.17,0.72,
+        self.ax.text(0.22,0.72,
                      r'$B_{\mathrm{surf}}\sim 10^{7-15}~\mathrm{G}$',
-                     fontsize=24,color='cyan',va='center',
+                     fontsize=self.font_scale,color='cyan',va='center',
                      ha='center',zorder=ord+1,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
@@ -259,8 +244,9 @@ class nstar_plot(load_crust):
                       0.07*sin(ang3+self.pi),
                       head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
                       zorder=ord)
-        self.ax.text(0.25,0.84,r'$\mathrm{freq.}=4.2\times 10^{-5}-720~\mathrm{Hz}$',
-                     fontsize=24,color=(0.2,0.8,0.2),va='center',
+        self.ax.text(0.30,0.84,
+                     r'$\mathrm{freq.}=4.2\times 10^{-5}-720~\mathrm{Hz}$',
+                     fontsize=self.font_scale,color=(0.2,0.8,0.2),va='center',
                      ha='center',zorder=ord+1,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
@@ -280,31 +266,31 @@ class nstar_plot(load_crust):
         plot.plot([0.5,0.41],[0.5,0.41],color='black',ls='-',lw=1.5,
                   zorder=ord)
         self.ax.text(0.51,0.44,r'$R{\approx}10-13$ km',
-                     rotation=-22.5,fontsize=20,zorder=ord)
+                     rotation=-22.5,fontsize=self.font_scale*0.8,zorder=ord)
 
     """
     Labels for the cutaway
     """
     def cut_labels(self,ord):
-        self.ax.text(0.69,0.95,'Atmos.: H, He, C',fontsize=20,
+        self.ax.text(0.69,0.95,'Atmos.: H, He, C',fontsize=self.font_scale*0.7,
                      color=self.atmos_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.90,'Outer Crust',fontsize=20,
+        self.ax.text(0.69,0.90,'Outer Crust',fontsize=self.font_scale*0.7,
                      color=self.crust_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.85,'(Z,N)+e',fontsize=20,
+        self.ax.text(0.69,0.85,'(Z,N)+e',fontsize=self.font_scale*0.7,
                      color=self.crust_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.80,'Inner crust',fontsize=20,
+        self.ax.text(0.69,0.80,'Inner crust',fontsize=self.font_scale*0.7,
                      color=self.crust_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.75,'(Z,N)+e+n',fontsize=20,
+        self.ax.text(0.69,0.75,'(Z,N)+e+n',fontsize=self.font_scale*0.7,
                      color=self.crust_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.70,'Outer Core: n+p+e',fontsize=20,
+        self.ax.text(0.69,0.70,'Outer Core: n+p+e',fontsize=self.font_scale*0.7,
                      color=self.core_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
-        self.ax.text(0.69,0.65,'Inner Core: ?',fontsize=20,
+        self.ax.text(0.69,0.65,'Inner Core: ?',fontsize=self.font_scale*0.7,
                      color=self.inner_color,va='center',ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         plot.plot([0.58,0.68],[0.78,0.95],
@@ -370,40 +356,49 @@ class nstar_plot(load_crust):
             pasta2.set_facecolor(self.core_color)
             self.ax.add_artist(pasta2)
         # Labels
-        self.ax.text(0.05,0.12,'Outer',fontsize=20,color='black',
+        self.ax.text(0.05,0.12,'Outer',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        self.ax.text(0.09,0.12,'Crust',fontsize=20,color='black',
+        self.ax.text(0.09,0.12,'Crust',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        self.ax.text(0.21,0.12,'neutron drip',fontsize=16,color='black',
+        self.ax.text(0.21,0.12,'neutron drip',fontsize=self.font_scale*0.6,color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        self.ax.text(0.25,0.12,'Inner',fontsize=20,color='black',
+        self.ax.text(0.25,0.12,'Inner',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.neutron_color,lw=0))
-        self.ax.text(0.29,0.12,'Crust',fontsize=20,color='black',
+        self.ax.text(0.29,0.12,'Crust',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.neutron_color,lw=0))
-        self.ax.text(0.38,0.12,'Pasta',fontsize=20,color='black',
+        self.ax.text(0.38,0.12,'Pasta',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.core_color,lw=0))
-        self.ax.text(0.45,0.12,'Core',fontsize=20,color='black',
+        self.ax.text(0.45,0.12,'Core',fontsize=self.font_scale*0.8,
+                     color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2)
         # Density labels
-        self.ax.text(0.08,0.24,'g/cm$^{3}$:',fontsize=20,color='black',
+        self.ax.text(0.08,0.24,'g/cm$^{3}$:',fontsize=self.font_scale*0.8,
+                     color='black',
                      va='bottom',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        self.ax.text(0.18,0.25,'$10^{11}$',fontsize=20,color='black',
+        self.ax.text(0.18,0.25,'$10^{11}$',fontsize=self.font_scale*0.8,
+                     color='black',
                      va='bottom',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        self.ax.text(0.39,0.25,'$10^{14}$',fontsize=20,color='black',
+        self.ax.text(0.39,0.25,'$10^{14}$',fontsize=self.font_scale*0.8,
+                     color='black',
                      va='bottom',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.core_color,lw=0))
         # Crust thickness label
         self.ax.text(0.26,0.335,
                      '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
-                     fontsize=20,color=self.text_color,
+                     fontsize=self.font_scale*0.8,color=self.text_color,
                      va='center',ha='center',zorder=13,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
@@ -442,6 +437,7 @@ class nstar_plot(load_crust):
         ax_ic.set_xticks([10.8,10.9,11.0,11.1,11.2,11.3])
         ax_ic.set_xticklabels(['','','','','',''])
         ax_ic.set_xlim([numpy.max(self.r_nnuc),numpy.min(self.r_nnuc)])
+        ax_ic.set_ylim([0,1])
         
         ctr=0
         for label in ax_ic.get_xticklabels():
@@ -465,35 +461,43 @@ class nstar_plot(load_crust):
                       mec=(0.75,0.75,1.0),
                   ms=self.Rn_nnuc[i])
 
-        ax_ic.text(10.9,0.2,'10.9',fontsize=16,
+        ax_ic.text(10.9,0.2,'10.9',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_ic.text(11.0,0.115,'11.0',fontsize=16,
+        ax_ic.text(11.0,0.115,'11.0',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_ic.text(11.1,0.2,'11.1',fontsize=16,
+        ax_ic.text(11.1,0.2,'11.1',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_ic.text(11.2,0.115,'11.2',fontsize=16,
+        ax_ic.text(11.2,0.115,'11.2',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_ic.text(11.27,0.2,'11.3',fontsize=16,
+        ax_ic.text(11.27,0.2,'11.3',fontsize=self.font_scale*0.6,
           va='center',ha='center')
             
-        #ax_ic.text(10.8,0.9,self.latex_float(rho_108),fontsize=16,
+        #ax_ic.text(10.8,0.9,self.latex_float(rho_108),
+        #fontsize=self.font_scale*0.6,
         #  va='top',ha='center',rotation=90)
-        ax_ic.text(10.9,0.9,self.latex_float(self.rho_109),fontsize=16,
+        
+        ax_ic.text(10.9,0.9,self.latex_float(self.rho_109),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_ic.text(11.0,0.9,self.latex_float(self.rho_110),fontsize=16,
+        ax_ic.text(11.0,0.9,self.latex_float(self.rho_110),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_ic.text(11.1,0.9,self.latex_float(self.rho_111),fontsize=16,
+        ax_ic.text(11.1,0.9,self.latex_float(self.rho_111),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_ic.text(11.2,0.9,self.latex_float(self.rho_112),fontsize=16,
+        ax_ic.text(11.2,0.9,self.latex_float(self.rho_112),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_ic.text(11.3,0.9,self.latex_float(self.rho_113),fontsize=16,
+        ax_ic.text(11.3,0.9,self.latex_float(self.rho_113),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
         
         # Inner crust labels
-        ax_ic.text(10.84,0.4,'pasta',fontsize=16,color='black',
+        ax_ic.text(10.84,0.4,'pasta',fontsize=self.font_scale*0.6,color='black',
                      rotation='90',va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
-        ax_ic.text(11.08,0.35,'inner crust',fontsize=16,color='black',
+        ax_ic.text(11.08,0.35,'inner crust',
+                   fontsize=self.font_scale*0.6,color='black',
                      va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
 
@@ -505,6 +509,7 @@ class nstar_plot(load_crust):
         ax_oc.tick_params('both',length=5,width=1,which='minor')
         ax_oc.set_xlim([numpy.max(self.r_nnuc_outer),
                         numpy.min(self.r_nnuc_outer)]) 
+        ax_oc.set_ylim([0,1])
         ax_oc.set_xticks([11.4,11.5,11.6,11.7])
         ax_oc.set_xticklabels(['','','',''])
         ax_oc.set_yticks([])
@@ -522,30 +527,35 @@ class nstar_plot(load_crust):
             label.set_position(t2)
             label.set_fontsize(16)
 
-        ax_oc.text(11.65,0.2,'11.7 km',fontsize=16,
+        ax_oc.text(11.65,0.2,'11.7 km',fontsize=self.font_scale*0.6,
           va='center',ha='center')
-        ax_oc.text(11.41,0.115,'11.4',fontsize=16,
+        ax_oc.text(11.41,0.115,'11.4',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_oc.text(11.5,0.2,'11.5',fontsize=16,
+        ax_oc.text(11.5,0.2,'11.5',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
-        ax_oc.text(11.6,0.115,'11.6',fontsize=16,
+        ax_oc.text(11.6,0.115,'11.6',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
         
-        ax_oc.text(11.4,0.9,self.latex_float(self.rho_114),fontsize=16,
+        ax_oc.text(11.4,0.9,self.latex_float(self.rho_114),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_oc.text(11.5,0.9,self.latex_float(self.rho_115),fontsize=16,
+        ax_oc.text(11.5,0.9,self.latex_float(self.rho_115),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_oc.text(11.6,0.9,self.latex_float(self.rho_116),fontsize=16,
+        ax_oc.text(11.6,0.9,self.latex_float(self.rho_116),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
-        ax_oc.text(11.69,0.9,r'$\rho=$'+self.latex_float(self.rho_117),fontsize=16,
+        ax_oc.text(11.69,0.9,r'$\rho=$'+self.latex_float(self.rho_117),
+                   fontsize=self.font_scale*0.6,
           va='top',ha='center',rotation=90)
         
         # Outer crust labels
-        plot.text(11.52,0.33,r'$\Leftarrow$ outer crust',fontsize=16,color='black',
+        plot.text(11.52,0.33,r'$\Leftarrow$ outer crust',
+                  fontsize=self.font_scale*0.6,color='black',
                      va='center',ha='center',zorder=ord+2,
                      bbox=dict(facecolor=self.crust_color,lw=0))
         
-        ax_oc.text(11.35,0.5,'neutron drip',fontsize=16,
+        ax_oc.text(11.35,0.5,'neutron drip',fontsize=self.font_scale*0.6,
                    color='black',
                    rotation='90',va='center',ha='center',zorder=ord+2,
                    bbox=dict(facecolor=self.crust_color,lw=0))
@@ -562,28 +572,33 @@ class nstar_plot(load_crust):
         self.ax.text(0.58,0.225,
                      (r'$\lambda=(0.2-6){\times}10^{36}~'+
                       r'\mathrm{g}~\mathrm{cm}^2~\mathrm{s}^2$'),
-                     fontsize=20,color=self.text_color,va='center',
+                     fontsize=self.font_scale*0.7,
+                     color=self.text_color,va='center',
                      ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.ax.text(0.58,0.175,
                      r'$I=50-200~\mathrm{M}_{\odot}~\mathrm{km}^2$',
-                     fontsize=20,color=self.text_color,va='center',
+                     fontsize=self.font_scale*0.7,
+                     color=self.text_color,va='center',
                      ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.ax.text(0.58,0.125,(r'$\varepsilon_{\mathrm{core}}='+
                                  r'500-1600~\mathrm{MeV}/\mathrm{fm}^{3}$'),
-                     fontsize=20,color=self.text_color,va='center',
+                     fontsize=self.font_scale*0.7,
+                     color=self.text_color,va='center',
                      ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.ax.text(0.58,0.075,(r'$n_{B,\mathrm{max}}='+
                                  r'0.6-1.3~\mathrm{fm}^{-3}$'),
-                     fontsize=20,color=self.text_color,va='center',
+                     fontsize=self.font_scale*0.7,
+                     color=self.text_color,va='center',
                      ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
         self.ax.text(0.58,0.025,
                      (r'$M_{\mathrm{min}}{\approx}1\mathrm{M}_{\odot}$ ;'+
                       r' $M_{\mathrm{max}}>2\mathrm{M}_{\odot}$'),
-                     fontsize=20,color=self.text_color,va='center',
+                     fontsize=self.font_scale*0.7,
+                     color=self.text_color,va='center',
                      ha='left',zorder=ord,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
             
@@ -625,85 +640,85 @@ if update_plot_files==True:
     instead.
     """
     os.system('convert nstar_plot.eps nstar_plot.png')
-#plot.show()
+plot.show()
 
-np.init()
-np.bkgd()
-np.base_star()
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage1.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage1.eps')
 
-np.init()
-np.bkgd()
-np.base_star()
-np.cutaway(1.0,np.atmos_color,5)
-np.cutaway(0.98,np.crust_color,6)
-np.cutaway(0.9,np.core_color,7)
-np.cutaway(0.5,np.inner_color,8)
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage2.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.cutaway(1.0,np.atmos_color,5)
+# np.cutaway(0.98,np.crust_color,6)
+# np.cutaway(0.9,np.core_color,7)
+# np.cutaway(0.5,np.inner_color,8)
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage2.eps')
 
-np.init()
-np.bkgd()
-np.base_star()
-np.cutaway(1.0,np.atmos_color,5)
-np.cutaway(0.98,np.crust_color,6)
-np.cutaway(0.9,np.core_color,7)
-np.cutaway(0.5,np.inner_color,8)
-np.cutaway_axes(9)
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage3.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.cutaway(1.0,np.atmos_color,5)
+# np.cutaway(0.98,np.crust_color,6)
+# np.cutaway(0.9,np.core_color,7)
+# np.cutaway(0.5,np.inner_color,8)
+# np.cutaway_axes(9)
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage3.eps')
 
-np.init()
-np.bkgd()
-np.base_star()
-np.cutaway(1.0,np.atmos_color,5)
-np.cutaway(0.98,np.crust_color,6)
-np.cutaway(0.9,np.core_color,7)
-np.cutaway(0.5,np.inner_color,8)
-np.cutaway_axes(9)
-np.cut_labels(9)
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage4.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.cutaway(1.0,np.atmos_color,5)
+# np.cutaway(0.98,np.crust_color,6)
+# np.cutaway(0.9,np.core_color,7)
+# np.cutaway(0.5,np.inner_color,8)
+# np.cutaway_axes(9)
+# np.cut_labels(9)
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage4.eps')
 
-np.init()
-np.bkgd()
-np.base_star()
-np.cutaway(1.0,np.atmos_color,5)
-np.cutaway(0.98,np.crust_color,6)
-np.cutaway(0.9,np.core_color,7)
-np.cutaway(0.5,np.inner_color,8)
-np.cutaway_axes(9)
-np.cut_labels(9)
-np.crust_box2(10)
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage5.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.cutaway(1.0,np.atmos_color,5)
+# np.cutaway(0.98,np.crust_color,6)
+# np.cutaway(0.9,np.core_color,7)
+# np.cutaway(0.5,np.inner_color,8)
+# np.cutaway_axes(9)
+# np.cut_labels(9)
+# np.crust_box2(10)
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage5.eps')
 
-np.init()
-np.bkgd()
-np.base_star()
-np.mag_field(2)
-np.rotation(2)
-np.cutaway(1.0,np.atmos_color,5)
-np.cutaway(0.98,np.crust_color,6)
-np.cutaway(0.9,np.core_color,7)
-np.cutaway(0.5,np.inner_color,8)
-np.cutaway_axes(9)
-np.cut_labels(9)
-np.crust_box2(10)
-np.title(15)
-if update_plot_files==True:
-    plot.savefig('nstar_plot_stage6.eps')
+# np.init()
+# np.bkgd()
+# np.base_star()
+# np.mag_field(2)
+# np.rotation(2)
+# np.cutaway(1.0,np.atmos_color,5)
+# np.cutaway(0.98,np.crust_color,6)
+# np.cutaway(0.9,np.core_color,7)
+# np.cutaway(0.5,np.inner_color,8)
+# np.cutaway_axes(9)
+# np.cut_labels(9)
+# np.crust_box2(10)
+# np.title(15)
+# if update_plot_files==True:
+#     plot.savefig('nstar_plot_stage6.eps')
 
-if update_plot_files==True:
-    os.system('convert nstar_plot_stage1.eps nstar_plot_stage1.png')
-    os.system('convert nstar_plot_stage2.eps nstar_plot_stage2.png')
-    os.system('convert nstar_plot_stage3.eps nstar_plot_stage3.png')
-    os.system('convert nstar_plot_stage4.eps nstar_plot_stage4.png')
-    os.system('convert nstar_plot_stage5.eps nstar_plot_stage5.png')
-    os.system('convert nstar_plot_stage6.eps nstar_plot_stage6.png')    
+# if update_plot_files==True:
+#     os.system('convert nstar_plot_stage1.eps nstar_plot_stage1.png')
+#     os.system('convert nstar_plot_stage2.eps nstar_plot_stage2.png')
+#     os.system('convert nstar_plot_stage3.eps nstar_plot_stage3.png')
+#     os.system('convert nstar_plot_stage4.eps nstar_plot_stage4.png')
+#     os.system('convert nstar_plot_stage5.eps nstar_plot_stage5.png')
+#     os.system('convert nstar_plot_stage6.eps nstar_plot_stage6.png')    
