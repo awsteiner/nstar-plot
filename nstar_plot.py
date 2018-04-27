@@ -1,29 +1,3 @@
-"""
--------------------------------------------------------------------
-
-Copyright (C) 2015, Andrew W. Steiner
-
-This is based on the excellent work by Dany Page at
-http://www.astroscu.unam.mx/neutrones/home.html
-
-This neutron star plot is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 3 of
-the License, or (at your option) any later version.
-
-This neutron star plot is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this neutron star plot. If not, see
-<http://www.gnu.org/licenses/>.
-
--------------------------------------------------------------------
-
-"""
-
 import os
 import math
 from math import cos
@@ -33,11 +7,29 @@ from matplotlib.patches import Ellipse
 from matplotlib.patches import Rectangle
 from pylab import rand
 import matplotlib.pyplot as plot
+import numpy
+import os
+import urllib.request
+try:
+    import o2sclpy
+except ImportError:
+    urllib.request.urlretrieve
+    ('http://raw.githubusercontent.com/awsteiner/o2scl'+
+     '/master/python/__init__.py','o2sclpy.py')
+    try:
+        import o2sclpy
+    except:
+        raise ImportError('Could not import o2sclpy, even after download.')
+from load_crust import load_crust
+print('Success.')
 
-""" -------------------------------------------------------------------
-Class definition
-"""
-class nstar_plot:
+# Internal code for parsing .bib and creating html
+if 0:
+    os.system("btmanip -parse refs.bib -hay nstar_plot_refs.html")
+
+update_plot_files=True
+
+class nstar_plot(load_crust):
 
     pi=math.acos(-1)
     # Default text color
@@ -57,8 +49,8 @@ class nstar_plot:
     # Figure object
     fig=0
     # Axis object
-    ax=0
-    
+    ax=0     
+
     # Default plot function from O2scl
     def default_plot(self,lmar=0.14,bmar=0.12,rmar=0.04,tmar=0.04):
         plot.rc('text',usetex=True)
@@ -228,6 +220,9 @@ class nstar_plot:
 
     1/11.79 Hz from Rim and Kaspi (2014),
     http://dx.doi.org/10.1088/0004-637X/784/1/37 .
+    
+    Now 4.2e-5 Hz from D'Ai et al. (2016),
+    http://dx.doi.org/10.1093/mnras/stw2023
     """
     def rotation(self,ord):
         ang3=3*self.pi/4-0.1
@@ -241,13 +236,16 @@ class nstar_plot:
                       0.07*sin(ang3+self.pi),
                       head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
                       zorder=ord)
-        self.ax.text(0.25,0.84,r'$\mathrm{freq.}=0.1-720~\mathrm{Hz}$',
+        self.ax.text(0.25,0.84,r'$\mathrm{freq.}=4.2\times 10^{-5}-720~\mathrm{Hz}$',
                      fontsize=24,color=(0.2,0.8,0.2),va='center',
                      ha='center',zorder=ord+1,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
     Axes for the cutaway
+    
+    Radius range from Steiner, et al. (2016)
+    http://dx.doi.org/10.1088/2041-8205/765/1/L5
     """
     def cutaway_axes(self,ord):
         # axes
@@ -382,12 +380,160 @@ class nstar_plot:
         # Crust thickness label
         self.ax.text(0.26,0.335,
                      '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
-                     fontsize=20,color='white',
+                     fontsize=20,color=self.text_color,
                      va='center',ha='center',zorder=13,
                      bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
+    Generic function to reformat a float as a latex string
+    """
+    def latex_float(self,f):
+        float_str = "{0:.2g}".format(f)
+        if "e" in float_str:
+            base, exponent = float_str.split("e")
+            return r"${0} \times 10^{{{1}}}$".format(base, int(exponent))
+        else:
+            return float_str    
+    
+    """
+    Crust structure from SLy4 model in Steiner (2012)
+    http://dx.doi.org/10.1103/PhysRevC.85.055804
+    """
+    def crust_box2(self,ord):
+        # Dashed lines to show zoom
+        plot.plot([0.01,0.408],[0.31,0.5],color='white',
+                  ls='--',lw=1.5,zorder=ord)
+        plot.plot([0.52,0.412],[0.31,0.5],color='white',
+                  ls='--',lw=1.5,zorder=ord)
+        
+        # Load crust in parent class
+        self.load()
+            
+        # Set up inner crust axes
+        ax_ic=self.fig.add_axes([0.28,0.01,0.24,0.3],
+                                facecolor=(1.0,0.5,0.5))
+        ax_ic.minorticks_on()
+        ax_ic.tick_params('both',length=12,width=1,which='major')
+        ax_ic.tick_params('both',length=5,width=1,which='minor')
+        ax_ic.set_yticks([])
+        ax_ic.set_xticks([10.8,10.9,11.0,11.1,11.2,11.3])
+        ax_ic.set_xticklabels(['','','','','',''])
+        ax_ic.set_xlim([numpy.max(self.r_nnuc),numpy.min(self.r_nnuc)])
+        
+        ctr=0
+        for label in ax_ic.get_xticklabels():
+            t=label.get_position()
+            if ctr%2==0:
+                t2=t[0],t[1]+0.18
+            else:
+                t2=t[0],t[1]+0.26
+            if ctr==0:
+                t2=t[0]+0.05,t[1]
+            label.set_position(t2)
+            label.set_fontsize(16)
+            ctr+=1
+        
+        # Plot inner crust
+        ax_ic.plot(self.r_nn,self.w_nn,marker='o',lw=0,mfc=(0.9,0.9,1.0),
+          mec=(0.9,0.9,1.0),mew=0.0,ms=2.0)
+        for i in range(0,len(self.r_nnuc)):
+            ax_ic.plot(self.r_nnuc[i],self.w_nnuc[i],
+                  marker='.',lw=0,mfc=(0.75,0.75,1.0),
+                      mec=(0.75,0.75,1.0),
+                  ms=self.Rn_nnuc[i])
+
+        ax_ic.text(10.9,0.2,'10.9',fontsize=16,
+          va='center',ha='center') 
+        ax_ic.text(11.0,0.115,'11.0',fontsize=16,
+          va='center',ha='center') 
+        ax_ic.text(11.1,0.2,'11.1',fontsize=16,
+          va='center',ha='center') 
+        ax_ic.text(11.2,0.115,'11.2',fontsize=16,
+          va='center',ha='center') 
+        ax_ic.text(11.27,0.2,'11.3',fontsize=16,
+          va='center',ha='center')
+            
+        #ax_ic.text(10.8,0.9,self.latex_float(rho_108),fontsize=16,
+        #  va='top',ha='center',rotation=90)
+        ax_ic.text(10.9,0.9,self.latex_float(self.rho_109),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_ic.text(11.0,0.9,self.latex_float(self.rho_110),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_ic.text(11.1,0.9,self.latex_float(self.rho_111),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_ic.text(11.2,0.9,self.latex_float(self.rho_112),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_ic.text(11.3,0.9,self.latex_float(self.rho_113),fontsize=16,
+          va='top',ha='center',rotation=90)
+        
+        # Inner crust labels
+        ax_ic.text(10.84,0.4,'pasta',fontsize=16,color='black',
+                     rotation='90',va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+        ax_ic.text(11.08,0.35,'inner crust',fontsize=16,color='black',
+                     va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+
+        # Set up outer crust axes
+        ax_oc=self.fig.add_axes([0.01,0.01,0.24,0.3],
+                                facecolor=(1.0,0.5,0.5))
+        ax_oc.minorticks_on()
+        ax_oc.tick_params('both',length=12,width=1,which='major')
+        ax_oc.tick_params('both',length=5,width=1,which='minor')
+        ax_oc.set_xlim([numpy.max(self.r_nnuc_outer),
+                        numpy.min(self.r_nnuc_outer)]) 
+        ax_oc.set_xticks([11.4,11.5,11.6,11.7])
+        ax_oc.set_xticklabels(['','','',''])
+        ax_oc.set_yticks([])
+        
+        # Plot outer crust
+        for i in range(0,len(self.r_nnuc)):
+            ax_oc.plot(self.r_nnuc_outer[i],self.w_nnuc_outer[i],
+                       marker='.',lw=0,mfc=(0.75,0.75,1.0),
+                       mec=(0.75,0.75,1.0),
+                       ms=self.Rn_nnuc_outer[i])
+        
+        for label in ax_oc.get_xticklabels():
+            t=label.get_position()
+            t2=t[0],t[1]+0.18
+            label.set_position(t2)
+            label.set_fontsize(16)
+
+        ax_oc.text(11.65,0.2,'11.7 km',fontsize=16,
+          va='center',ha='center')
+        ax_oc.text(11.41,0.115,'11.4',fontsize=16,
+          va='center',ha='center') 
+        ax_oc.text(11.5,0.2,'11.5',fontsize=16,
+          va='center',ha='center') 
+        ax_oc.text(11.6,0.115,'11.6',fontsize=16,
+          va='center',ha='center') 
+        
+        ax_oc.text(11.4,0.9,self.latex_float(self.rho_114),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_oc.text(11.5,0.9,self.latex_float(self.rho_115),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_oc.text(11.6,0.9,self.latex_float(self.rho_116),fontsize=16,
+          va='top',ha='center',rotation=90)
+        ax_oc.text(11.69,0.9,r'$\rho=$'+self.latex_float(self.rho_117),fontsize=16,
+          va='top',ha='center',rotation=90)
+        
+        # Outer crust labels
+        plot.text(11.52,0.33,r'$\Leftarrow$ outer crust',fontsize=16,color='black',
+                     va='center',ha='center',zorder=ord+2,
+                     bbox=dict(facecolor=self.crust_color,lw=0))
+        
+        ax_oc.text(11.35,0.5,'neutron drip',fontsize=16,
+                   color='black',
+                   rotation='90',va='center',ha='center',zorder=ord+2,
+                   bbox=dict(facecolor=self.crust_color,lw=0))
+        
+        return
+        
+    """
     Box for various properties
+    
+    These limits are from Steiner et al. (2015)
+    http://dx.doi.org/10.1103/PhysRevC.91.015804
     """
     def mass_limits(self,ord):
         self.ax.text(0.58,0.225,
@@ -442,22 +588,99 @@ class nstar_plot:
         self.cutaway(0.5,self.inner_color,8)
         self.cutaway_axes(9)
         self.cut_labels(9)
-        self.crust_box(10)
+        self.crust_box2(10)
         self.mass_limits(13)
         self.title(15)
-        
-        plot.savefig('nstar_plot.eps')
-        """
-        Unfortunately the cutaway fills don't render properly on png
-        output for some backends, so I use imagemagick to make .png
-        instead.
-        """
-        os.system('convert nstar_plot.eps nstar_plot.png')
-        plot.show()
-
-""" -------------------------------------------------------------------
-Create the plot
-"""
 
 np=nstar_plot()
 np.run()
+if update_plot_files==True:
+    plot.savefig('nstar_plot.eps')
+    """
+    Unfortunately the cutaway fills don't render properly on png
+    output for some backends, so I use imagemagick to make .png
+    instead.
+    """
+    os.system('convert nstar_plot.eps nstar_plot.png')
+#plot.show()
+
+np.init()
+np.bkgd()
+np.base_star()
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage1.eps')
+
+np.init()
+np.bkgd()
+np.base_star()
+np.cutaway(1.0,np.atmos_color,5)
+np.cutaway(0.98,np.crust_color,6)
+np.cutaway(0.9,np.core_color,7)
+np.cutaway(0.5,np.inner_color,8)
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage2.eps')
+
+np.init()
+np.bkgd()
+np.base_star()
+np.cutaway(1.0,np.atmos_color,5)
+np.cutaway(0.98,np.crust_color,6)
+np.cutaway(0.9,np.core_color,7)
+np.cutaway(0.5,np.inner_color,8)
+np.cutaway_axes(9)
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage3.eps')
+
+np.init()
+np.bkgd()
+np.base_star()
+np.cutaway(1.0,np.atmos_color,5)
+np.cutaway(0.98,np.crust_color,6)
+np.cutaway(0.9,np.core_color,7)
+np.cutaway(0.5,np.inner_color,8)
+np.cutaway_axes(9)
+np.cut_labels(9)
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage4.eps')
+
+np.init()
+np.bkgd()
+np.base_star()
+np.cutaway(1.0,np.atmos_color,5)
+np.cutaway(0.98,np.crust_color,6)
+np.cutaway(0.9,np.core_color,7)
+np.cutaway(0.5,np.inner_color,8)
+np.cutaway_axes(9)
+np.cut_labels(9)
+np.crust_box2(10)
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage5.eps')
+
+np.init()
+np.bkgd()
+np.base_star()
+np.mag_field(2)
+np.rotation(2)
+np.cutaway(1.0,np.atmos_color,5)
+np.cutaway(0.98,np.crust_color,6)
+np.cutaway(0.9,np.core_color,7)
+np.cutaway(0.5,np.inner_color,8)
+np.cutaway_axes(9)
+np.cut_labels(9)
+np.crust_box2(10)
+np.title(15)
+if update_plot_files==True:
+    plot.savefig('nstar_plot_stage6.eps')
+
+if update_plot_files==True:
+    os.system('convert nstar_plot_stage1.eps nstar_plot_stage1.png')
+    os.system('convert nstar_plot_stage2.eps nstar_plot_stage2.png')
+    os.system('convert nstar_plot_stage3.eps nstar_plot_stage3.png')
+    os.system('convert nstar_plot_stage4.eps nstar_plot_stage4.png')
+    os.system('convert nstar_plot_stage5.eps nstar_plot_stage5.png')
+    os.system('convert nstar_plot_stage6.eps nstar_plot_stage6.png')    
