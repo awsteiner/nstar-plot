@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------
 
-Copyright (C) 2015-2016, Andrew W. Steiner
+Copyright (C) 2015-2018, Andrew W. Steiner
 
 This neutron star plot is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License
