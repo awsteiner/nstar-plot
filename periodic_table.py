@@ -23,20 +23,56 @@ along with this periodic table plot. If not, see
 import numpy as np
 import matplotlib.pyplot as plot
 import matplotlib.patches as patches
-from matplotlib.font_manager import FontProperties
 
 # ----------------------------------------------------------------
 # Note that the matplotlib output is significantly different on
 # OSX and Ubuntu, and this code is currently designed to run on
 # OSX.
 
+unstable_color=(0.9,0.9,0.9)
+BBN_color=(0.9,1.0,0.9)
+cosmic_ray_color=(1.0,0.9,0.9)
+SNe_color=(0.9,0.9,1.0)
+WD_color=(0.8,0.9,1.0)
+r_proc_color=(1.0,1.0,0.9)
+s_proc_color=(1.0,0.9,1.0)
+
 # ----------------------------------------------------------------
 # box
 
-def box(x,y,Z,abbrev,name,mass,ax,font_abbrev,font_name,font_mass,font_Z):
-    p=patches.Rectangle((x-0.5,y-0.5),1,1,fill=True,lw=0.5,
-                        color=(1.0-x/40,0.5+x/40,1.0))
-    ax.add_patch(p)
+def box(x,y,Z,abbrev,name,mass,ax,af):
+    fill_color=(1.0-x/40,0.5+x/40,1.0)
+    if True:
+        if int(Z)==43 or int(Z)==61:
+            fill_color=unstable_color
+        elif float(af[int(Z)][2])>0.999:
+            fill_color=BBN_color
+        elif float(af[int(Z)][3])>0.999:
+            fill_color=cosmic_ray_color
+        elif float(af[int(Z)][4])>0.999:
+            fill_color=SNe_color
+        elif float(af[int(Z)][5])>0.999:
+            fill_color=WD_color
+        elif int(Z)>83:
+            fill_color=unstable_color
+    if (int(Z)!=43 and int(Z)!=61 and
+        float(af[int(Z)][6])+float(af[int(Z)][7])>0.001):
+        frac_r=float(af[int(Z)][6])
+        frac_s=float(af[int(Z)][7])
+        y1_lower=y-0.5
+        y1_height=frac_r
+        y2_lower=y-0.5+frac_r
+        y2_height=1.0-frac_r
+        p=patches.Rectangle((x-0.5,y1_lower),1,y1_height,fill=True,lw=0.5,
+                            color=r_proc_color)
+        ax.add_patch(p)
+        p=patches.Rectangle((x-0.5,y2_lower),1,y2_height,fill=True,lw=0.5,
+                            color=s_proc_color)
+        ax.add_patch(p)
+    else:
+        p=patches.Rectangle((x-0.5,y-0.5),1,1,fill=True,lw=0.5,
+                            color=fill_color)
+        ax.add_patch(p)
     p2=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=0.5)
     ax.add_patch(p2)
     if int(Z)>99:
@@ -75,6 +111,7 @@ debug=True
 # Read data
 
 df=np.genfromtxt('ciaaw_edit.txt',dtype='str')
+af=np.genfromtxt('abund2.txt',dtype='str')
 
 # ----------------------------------------------------------------
 # Initial parse 
@@ -235,27 +272,12 @@ plot.rc('text',usetex=True)
 #plot.rc('font',family='serif')
 plot.rcParams['lines.linewidth']=0.5
 
-# ---------------------------------------------------------
-# Create serif and sans-serif font objects
+# ------------------------------------------------------------------
 
-font_abbrev=FontProperties()
-font_abbrev.set_family('serif')
-font_abbrev.set_size('large')
-
-font_name=font_abbrev.copy()
-font_name.set_size('small')
-font_name.set_family('sans-serif')
-
-font_mass=font_name.copy()
-
-font_Z=font_name.copy()
-
-font_name.set_size('xx-small')
-font_mass.set_size('xx-small')
-
-# ---------------------------------------------------------
-
+# 8x6 is the same as 10x7.5 and thus is perfect for 8.5 x 11 paper
+# with 1/2 inch margins on all four sides
 fig=plot.figure(1,figsize=(8.0,6.0))
+
 fig.set_facecolor('white')
 ax=plot.axes([0.04,0.04,0.92,0.92])
 ax.minorticks_on()
@@ -269,9 +291,9 @@ plot.axis('off')
 
 for i in range(0,len(name_arr)):
     box(px_cent[i],py_cent[i],str(Z_arr[i]),abbrev_arr[i],name_arr[i],
-        wgt_arr[i],ax,font_abbrev,font_name,font_mass,font_Z)
+        wgt_arr[i],ax,af)
 
-ax.text(2,10.5,'Periodic Table',
+ax.text(2,10.5,'Periodic Table and Origin of the Elements',
         ha='left',va='center',fontsize=20)
 
 group_color=(0.4,0.4,0.4)
@@ -296,7 +318,7 @@ ax.text(17,9.15,'17',
         ha='center',va='center',fontsize=10,color=group_color)
 ax.text(18,10.15,'18',
         ha='center',va='center',fontsize=10,color=group_color)
-for i in range(0,15):
+for i in range(0,1):
     ax.text(i+3,2.65,str(i+3),
             ha='center',va='center',fontsize=10,color=group_color)
 
@@ -309,18 +331,37 @@ ax.text(3,9.7,('$^m$ Some commerical samples have isotopic'+
 ax.text(3,9.5,('$^r$ Precision limited by large isotopic range in'+
                ' normal terrestrial material'),
         ha='left',va='center',fontsize=7)
-ax.text(3,9.3,'$^u$ unstable',
-        ha='left',va='center',fontsize=7)
-ax.text(3,9.1,'$^v$ unstable with two longest-lived isotopes',
-        ha='left',va='center',fontsize=7)
-ax.text(3,8.9,('$^b$ CIAAW bracket has been converted to '+
+ax.text(3,9.3,('$^b$ CIAAW bracket has been converted to '+
                'central value and error'),
         ha='left',va='center',fontsize=7)
-ax.text(3,8.7,'Data taken from CIAAW',
+ax.text(3,9.1,'Data taken from CIAAW, Simmerer et al. (2004)',
         ha='left',va='center',fontsize=7)
-ax.text(3,8.5,('Python code at https://github.com/awsteiner/'+
+ax.text(3,8.9,('Inspired by previous versions from Jennifer Johnson, '+
+               'Inese Ivans, and Anna Frebel'),
+        ha='left',va='center',fontsize=7)
+ax.text(3.2,8.7,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
+                 'the-elements-in-the-solar-system/ )'),
+        ha='left',va='center',fontsize=7)
+ax.text(3,8.5,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
+        ha='left',va='center',fontsize=7)
+ax.text(3.2,8.3,('python code at https://github.com/awsteiner/'+
                'nstar-plot/periodic\_table.py'),
         ha='left',va='center',fontsize=7)
+
+ns_legend_x=[1,3,5,7,9,11,13]
+ns_legend_color=[BBN_color,cosmic_ray_color,SNe_color,WD_color,
+                 r_proc_color,s_proc_color,unstable_color]
+ns_legend_text=['big bang','cosmic rays','supernovae','white dwarfs',
+                'r-process','s-process','unstable']
+
+for i in range(0,7):
+    leg1a=patches.Rectangle((ns_legend_x[i],0.01),0.4,0.4,fill=True,lw=0.5,
+                            color=ns_legend_color[i])
+    ax.add_patch(leg1a)
+    leg1b=patches.Rectangle((ns_legend_x[i],0.01),0.4,0.4,fill=False,lw=0.5)
+    ax.add_patch(leg1b)
+    ax.text(ns_legend_x[i]+0.5,0.225,ns_legend_text[i],
+            ha='left',va='center',fontsize=7)
 
 plot.savefig('pt.pdf')    
 plot.show()
