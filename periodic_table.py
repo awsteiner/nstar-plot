@@ -24,6 +24,8 @@ import numpy as np
 import matplotlib.pyplot as plot
 import matplotlib.patches as patches
 
+nsynth_mode=True
+
 # ----------------------------------------------------------------
 # Note that the matplotlib output is significantly different on
 # OSX and Ubuntu, and this code is currently designed to run on
@@ -40,8 +42,9 @@ s_proc_color=(1.0,0.9,1.0)
 # ----------------------------------------------------------------
 # box
 
-def box(x,y,Z,abbrev,name,mass,ax,af):
-    fill_color=(1.0-x/40,0.5+x/40,1.0)
+def box(x,y,Z,abbrev,name,mass,ax,af,lf):
+    #fill_color=(1.0-x/40,0.5+x/40,1.0)
+    fill_color=(1.0,1.0,1.0)
     if True:
         if int(Z)==43 or int(Z)==61:
             fill_color=unstable_color
@@ -92,12 +95,30 @@ def box(x,y,Z,abbrev,name,mass,ax,af):
     else:
         ax.text(x,y-0.2,name,ha='center',va='center',
                 fontsize=6)
-    if name=='Hydrogen' or name=='Magnesium':
-        ax.text(x,y-0.4,mass,ha='center',va='center',
-                fontsize=5)
+    if nsynth_mode==True:
+        if abbrev=='H':
+            ax.text(x,y-0.4,'12',ha='center',va='center',
+                    fontsize=5)
+        else:
+            for i in range(0,83):
+                if lf[i][0]==abbrev:
+                    abund=r'$ '+lf[i][1]+'{\pm}'+lf[i][2]+' $'
+                    if len(abund)>17:
+                        ax.text(x,y-0.4,abund,ha='center',va='center',
+                                fontsize=3)
+                    elif len(abund)>16:
+                        ax.text(x,y-0.4,abund,ha='center',va='center',
+                                fontsize=4)
+                    else:
+                        ax.text(x,y-0.4,abund,ha='center',va='center',
+                                fontsize=5)
     else:
-        ax.text(x,y-0.4,mass,ha='center',va='center',
-                fontsize=7)
+        if name=='Hydrogen' or name=='Magnesium':
+            ax.text(x,y-0.4,mass,ha='center',va='center',
+                    fontsize=5)
+        else:
+            ax.text(x,y-0.4,mass,ha='center',va='center',
+                    fontsize=7)
     
 # ----------------------------------------------------------------
 # Options 
@@ -112,6 +133,7 @@ debug=True
 
 df=np.genfromtxt('ciaaw_edit.txt',dtype='str')
 af=np.genfromtxt('abund2.txt',dtype='str')
+lf=np.genfromtxt('lodders03b.txt',dtype='str')
 
 # ----------------------------------------------------------------
 # Initial parse 
@@ -291,60 +313,66 @@ plot.axis('off')
 
 for i in range(0,len(name_arr)):
     box(px_cent[i],py_cent[i],str(Z_arr[i]),abbrev_arr[i],name_arr[i],
-        wgt_arr[i],ax,af)
+        wgt_arr[i],ax,af,lf)
 
-ax.text(2,10.5,'Periodic Table and Origin of the Elements',
+ax.text(2,10.5,'Origin of the Elements',
         ha='left',va='center',fontsize=20)
 
-group_color=(0.4,0.4,0.4)
-ax.text(0.0,10.15,'Group:',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(1,10.15,'1',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(2,9.15,'2',
-        ha='center',va='center',fontsize=10,color=group_color)
-for i in range(0,10):
-    ax.text(i+3,7.15,str(i+3),
+if nsynth_mode==False:
+    group_color=(0.4,0.4,0.4)
+    ax.text(0.0,10.15,'Group:',
             ha='center',va='center',fontsize=10,color=group_color)
-ax.text(13,9.15,'13',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(14,9.15,'14',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(15,9.15,'15',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(16,9.15,'16',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(17,9.15,'17',
-        ha='center',va='center',fontsize=10,color=group_color)
-ax.text(18,10.15,'18',
-        ha='center',va='center',fontsize=10,color=group_color)
-for i in range(0,1):
-    ax.text(i+3,2.65,str(i+3),
+    ax.text(1,10.15,'1',
             ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(2,9.15,'2',
+            ha='center',va='center',fontsize=10,color=group_color)
+    for i in range(0,10):
+        ax.text(i+3,7.15,str(i+3),
+                ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(13,9.15,'13',
+            ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(14,9.15,'14',
+            ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(15,9.15,'15',
+            ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(16,9.15,'16',
+            ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(17,9.15,'17',
+            ha='center',va='center',fontsize=10,color=group_color)
+    ax.text(18,10.15,'18',
+            ha='center',va='center',fontsize=10,color=group_color)
+    for i in range(0,1):
+        ax.text(i+3,2.65,str(i+3),
+                ha='center',va='center',fontsize=10,color=group_color)
 
-ax.text(3,9.9,('$^g$ Some geologic samples have isotopic'+
-               ' compositions which vary outside quoted errors'),
+    ax.text(3,9.9,('$^g$ Some geologic samples have isotopic'+
+                   ' compositions which vary outside quoted errors'),
+            ha='left',va='center',fontsize=7)
+    ax.text(3,9.7,('$^m$ Some commerical samples have isotopic comp'+
+                   'ositions which have large deviations from quoted range'),
+            ha='left',va='center',fontsize=7)
+    ax.text(3,9.5,('$^r$ Precision limited by large isotopic range in'+
+                   ' normal terrestrial material'),
+            ha='left',va='center',fontsize=7)
+    ax.text(3,9.3,('$^b$ CIAAW bracket has been converted to '+
+                   'central value and error'),
+            ha='left',va='center',fontsize=7)
+    
+ax.text(3.0,9.7,('Lower number gives the $\mathrm{log}_{10} $ '+
+               'of the solar system abundance normalized to 12 for H'+
+               '(Lodders 2003)'),
         ha='left',va='center',fontsize=7)
-ax.text(3,9.7,('$^m$ Some commerical samples have isotopic'+
-               ' compositions which have large deviations from quoted range'),
+ax.text(3.0,9.5,'r-process to s-process ratios from Simmerer et al. (2004)',
         ha='left',va='center',fontsize=7)
-ax.text(3,9.5,('$^r$ Precision limited by large isotopic range in'+
-               ' normal terrestrial material'),
-        ha='left',va='center',fontsize=7)
-ax.text(3,9.3,('$^b$ CIAAW bracket has been converted to '+
-               'central value and error'),
-        ha='left',va='center',fontsize=7)
-ax.text(3,9.1,'Data taken from CIAAW, Simmerer et al. (2004)',
-        ha='left',va='center',fontsize=7)
-ax.text(3,8.9,('Inspired by previous versions from Jennifer Johnson, '+
+ax.text(3.0,9.3,('Inspired by previous versions from Jennifer Johnson, '+
                'Inese Ivans, and Anna Frebel'),
         ha='left',va='center',fontsize=7)
-ax.text(3.2,8.7,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
+ax.text(3.2,9.1,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
                  'the-elements-in-the-solar-system/ )'),
         ha='left',va='center',fontsize=7)
-ax.text(3,8.5,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
+ax.text(3.0,8.9,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
         ha='left',va='center',fontsize=7)
-ax.text(3.2,8.3,('python code at https://github.com/awsteiner/'+
+ax.text(3.2,8.7,('python code at https://github.com/awsteiner/'+
                'nstar-plot/periodic\_table.py'),
         ha='left',va='center',fontsize=7)
 
