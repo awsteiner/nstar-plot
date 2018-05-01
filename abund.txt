@@ -113,7 +113,7 @@ Z	element	BBN	CR	SNe	WD	s-proc	r-proc
 112	Cn	0	0	0	0	0	0
 113	Nh	0	0	0	0	0	0
 114	Fl	0	0	0	0	0	0
-115	Mo	0	0	0	0	0	0
+115	Mc	0	0	0	0	0	0
 116	Lv	0	0	0	0	0	0
 117	Ts	0	0	0	0	0	0
 118	Og	0	0	0	0	0	0

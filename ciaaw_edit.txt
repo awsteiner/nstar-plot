@@ -106,7 +106,7 @@ Tin		g g	Sn	50	118.710 (7) 118.71 0.0
 Titanium	n n	Ti	22	47.867 (1) 47.867 0.0
 Tungsten	n n	W	74	183.84 (1) 183.84 0.0
 Oganesson	u u	Og	118	294 0 294 0
-Moscovium	u u	Mo	115	288 0 288 0
+Moscovium	u u	Mc	115	288 0 288 0
 Tennessine	u u	Ts	117	294 0 294 0
 Nihonium	u u	Nh	113	286 0 286 0
 Uranium		gm gm	U	92	238.02891 (3) 238.03 0.0
