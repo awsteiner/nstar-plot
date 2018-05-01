@@ -34,8 +34,9 @@ nsynth_mode=True
 unstable_color=(0.9,0.9,0.9)
 BBN_color=(0.9,1.0,0.9)
 cosmic_ray_color=(1.0,0.9,0.9)
+Star_color=(1.0,0.8,0.8)
 SNe_color=(0.9,0.9,1.0)
-WD_color=(0.8,0.9,1.0)
+WD_color=(0.8,1.0,0.8)
 r_proc_color=(1.0,1.0,0.9)
 s_proc_color=(1.0,0.9,1.0)
 
@@ -45,39 +46,55 @@ s_proc_color=(1.0,0.9,1.0)
 def box(x,y,Z,abbrev,name,mass,ax,af,lf):
     #fill_color=(1.0-x/40,0.5+x/40,1.0)
     fill_color=(1.0,1.0,1.0)
-    if True:
-        if int(Z)==43 or int(Z)==61:
-            fill_color=unstable_color
-        elif float(af[int(Z)][2])>0.999:
-            fill_color=BBN_color
-        elif float(af[int(Z)][3])>0.999:
-            fill_color=cosmic_ray_color
-        elif float(af[int(Z)][4])>0.999:
-            fill_color=SNe_color
-        elif float(af[int(Z)][5])>0.999:
-            fill_color=WD_color
-        elif int(Z)>83:
-            fill_color=unstable_color
-    if (int(Z)!=43 and int(Z)!=61 and
-        float(af[int(Z)][6])+float(af[int(Z)][7])>0.001):
-        frac_r=float(af[int(Z)][6])
-        frac_s=float(af[int(Z)][7])
-        y1_lower=y-0.5
-        y1_height=frac_r
-        y2_lower=y-0.5+frac_r
-        y2_height=1.0-frac_r
-        p=patches.Rectangle((x-0.5,y1_lower),1,y1_height,fill=True,lw=0.5,
-                            color=r_proc_color)
-        ax.add_patch(p)
-        p=patches.Rectangle((x-0.5,y2_lower),1,y2_height,fill=True,lw=0.5,
-                            color=s_proc_color)
-        ax.add_patch(p)
+    if nsynth_mode:
+        bbn_frac=float(af[int(Z)][2])
+        cr_frac=float(af[int(Z)][3])
+        star_frac=float(af[int(Z)][4])
+        sne_frac=float(af[int(Z)][5])
+        wd_frac=float(af[int(Z)][6])
+        r_frac=float(af[int(Z)][7])
+        s_frac=float(af[int(Z)][8])
+        total=bbn_frac+cr_frac+star_frac+sne_frac+wd_frac+r_frac+s_frac
+        if total<1.0e-4:
+            punstable=patches.Rectangle((x-0.5,y-0.5),1,1,fill=True,lw=0.5,
+                                        color=unstable_color)
+            ax.add_patch(punstable)
+        else:
+            y0=1
+            y1=1-bbn_frac
+            y2=1-bbn_frac-cr_frac
+            y3=1-bbn_frac-cr_frac-star_frac
+            y4=1-bbn_frac-cr_frac-star_frac-sne_frac
+            y5=1-bbn_frac-cr_frac-star_frac-sne_frac-wd_frac
+            y6=1-bbn_frac-cr_frac-star_frac-sne_frac-wd_frac-r_frac
+            y7=0
+            p0=patches.Rectangle((x-0.5,y-0.5+y1),1,y0-y1,fill=True,lw=0.5,
+                                color=BBN_color)
+            ax.add_patch(p0)
+            p1=patches.Rectangle((x-0.5,y-0.5+y2),1,y1-y2,fill=True,lw=0.5,
+                                color=cosmic_ray_color)
+            ax.add_patch(p1)
+            p2=patches.Rectangle((x-0.5,y-0.5+y3),1,y2-y3,fill=True,lw=0.5,
+                                color=Star_color)
+            ax.add_patch(p2)
+            p3=patches.Rectangle((x-0.5,y-0.5+y4),1,y3-y4,fill=True,lw=0.5,
+                                color=SNe_color)
+            ax.add_patch(p3)
+            p4=patches.Rectangle((x-0.5,y-0.5+y5),1,y4-y5,fill=True,lw=0.5,
+                                color=WD_color)
+            ax.add_patch(p4)
+            p5=patches.Rectangle((x-0.5,y-0.5+y6),1,y5-y6,fill=True,lw=0.5,
+                                color=r_proc_color)
+            ax.add_patch(p5)
+            p6=patches.Rectangle((x-0.5,y-0.5+y7),1,y6-y7,fill=True,lw=0.5,
+                                color=s_proc_color)
+            ax.add_patch(p6)
     else:
         p=patches.Rectangle((x-0.5,y-0.5),1,1,fill=True,lw=0.5,
                             color=fill_color)
         ax.add_patch(p)
-    p2=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=0.5)
-    ax.add_patch(p2)
+    poutline=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=0.5)
+    ax.add_patch(poutline)
     if int(Z)>99:
         ax.text(x-0.23,y+0.35,Z,ha='center',va='center',
                 fontsize=7)
@@ -357,29 +374,38 @@ if nsynth_mode==False:
     ax.text(3,9.3,('$^b$ CIAAW bracket has been converted to '+
                    'central value and error'),
             ha='left',va='center',fontsize=7)
-    
-ax.text(3.0,9.7,('Lower number gives the $\mathrm{log}_{10} $ '+
-               'of the solar system abundance normalized to 12 for H'+
-               '(Lodders 2003)'),
+
+notes_x=2.8
+ax.text(notes_x,9.7,('The bottom number gives the $\mathrm{log}_{10} $ '+
+               'of the solar system abundance shifted to 12 for H '+
+               '(Lodders 2003).'),
         ha='left',va='center',fontsize=7)
-ax.text(3.0,9.5,'r-process to s-process ratios from Simmerer et al. (2004)',
+ax.text(notes_x,9.5,'r-process to s-process ratios are from Simmerer et al. (2004)',
         ha='left',va='center',fontsize=7)
-ax.text(3.0,9.3,('Inspired by previous versions from Jennifer Johnson, '+
+ax.text(notes_x,9.3,('Inspired by previous versions from Jennifer Johnson, '+
                'Inese Ivans, and Anna Frebel'),
         ha='left',va='center',fontsize=7)
-ax.text(3.2,9.1,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
-                 'the-elements-in-the-solar-system/ )'),
+ax.text(notes_x+0.2,9.1,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
+                 'the-elements-in-the-solar-system/ '),
         ha='left',va='center',fontsize=7)
-ax.text(3.0,8.9,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
+ax.text(notes_x+0.2,8.9,('and http://www.cosmic-origins.org/ ).'),
         ha='left',va='center',fontsize=7)
-ax.text(3.2,8.7,('python code at https://github.com/awsteiner/'+
+ax.text(notes_x,8.7,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
+        ha='left',va='center',fontsize=7)
+ax.text(notes_x+0.2,8.5,('python code (GPLv3) at https://github.com/awsteiner/'+
                'nstar-plot/periodic\_table.py'),
         ha='left',va='center',fontsize=7)
+ax.text(notes_x,8.3,('There are significant uncertainties in some values '+
+                     'that are not shown here.'),
+        ha='left',va='center',fontsize=7)
+ax.text(notes_x,8.1,('The origin of some elements is strongly isotope-dependent.'),
+        ha='left',va='center',fontsize=7)
 
-ns_legend_x=[1,3,5,7,9,11,13]
-ns_legend_color=[BBN_color,cosmic_ray_color,SNe_color,WD_color,
+ns_legend_x=[1,3.5,6,8.5,11,13.5,16,18.5]
+ns_legend_color=[BBN_color,cosmic_ray_color,Star_color,SNe_color,WD_color,
                  r_proc_color,s_proc_color,unstable_color]
-ns_legend_text=['big bang','cosmic rays','supernovae','white dwarfs',
+ns_legend_text=['big bang','cosmic rays','stellar evolution',
+                'supernovae','white dwarfs',
                 'r-process','s-process','unstable']
 
 for i in range(0,7):
@@ -391,6 +417,9 @@ for i in range(0,7):
     ax.text(ns_legend_x[i]+0.5,0.225,ns_legend_text[i],
             ha='left',va='center',fontsize=7)
 
-plot.savefig('pt.pdf')    
+plot.savefig('periodic_table.pdf')
+import os
+os.system('convert -density 300 periodic_table.pdf periodic_table.png')
 plot.show()
     
+

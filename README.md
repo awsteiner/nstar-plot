@@ -14,3 +14,6 @@ Neutron star plot based, in part, on Dany Page's excellent work at
 History of superconductivity based on P.J. Ray's data from
 http://dx.doi.org/10.6084/m9.figshare.2075680.v2
 
+![Origin of the Elements](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/periodic_table.png)
+
+
