@@ -8,6 +8,18 @@ LIB = -L$(O2SCL_LIB) -L$(GSL_LIB) -L$(HDF5_LIB) -lo2scl_eos \
 
 #----------------------------------------------------------------------
 
+doc:
+# Get most recent commit hash
+        git rev-parse HEAD | awk \
+                '{print "`" $$1 " <http://github.com/awsteiner/nstar-plot/tree/" $$1 ">`_"}' \
+                 > sphinx/commit.rst
+# Parse bibliography
+        cd sphinx/static; cat bib_header.txt > ../bib.rst
+        cd sphinx/static; btmanip -parse crust.bib -rst ../bib_temp.rst
+        cd sphinx; cat bib_temp.rst >> bib.rst; rm -f bib_temp.rst
+# Run sphinx
+        cd sphinx; make html
+
 crust_plot.o: crust_plot.cpp
 	$(CXX) $(FLAGS) -o crust_plot.o -c crust_plot.cpp
 
