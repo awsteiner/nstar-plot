@@ -20,6 +20,9 @@ doc:
 # Run sphinx
 	cd sphinx; make html
 
+sync-doc:
+	sudo cp -r sphinx/build/html/* $(STATIC_DOC_DIR)/nstar-plot
+
 crust_plot.o: crust_plot.cpp
 	$(CXX) $(FLAGS) -o crust_plot.o -c crust_plot.cpp
 
