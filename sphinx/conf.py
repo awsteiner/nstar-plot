@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# eos documentation build configuration file, created by
+# nstar-plot documentation build configuration file, created by
 # sphinx-quickstart on Thu Apr 20 09:06:02 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -38,8 +38,8 @@ extensions = ['sphinx.ext.autodoc',
               'breathe']
 
 #
-breathe_projects = { "eos": os.path.abspath('../doc/xml') }
-breathe_default_project = "eos"
+breathe_projects = { "nstar-plot": os.path.abspath('../doc/xml') }
+breathe_default_project = "nstar-plot"
 #
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,9 +55,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'eos'
-copyright = '2017, Xingfu Du and Andrew W. Steiner'
-author = 'Xingfu Du and Andrew W. Steiner'
+project = 'nstar-plot'
+copyright = '2015-2018, Andrew W. Steiner'
+author = 'Andrew W. Steiner'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -112,7 +112,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'eosdoc'
+htmlhelp_basename = 'nstar-plotdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -139,7 +139,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'eos.tex', 'eos Documentation',
+    (master_doc, 'nstar-plot.tex', 'nstar-plot Documentation',
      'Xingfu Du and Andrew W. Steiner', 'manual'),
 ]
 
@@ -149,7 +149,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'eos', 'eos Documentation',
+    (master_doc, 'nstar-plot', 'nstar-plot Documentation',
      [author], 1)
 ]
 
@@ -160,8 +160,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'eos', 'eos Documentation',
-     author, 'eos', 'One line description of project.',
+    (master_doc, 'nstar-plot', 'nstar-plot Documentation',
+     author, 'nstar-plot', 'One line description of project.',
      'Miscellaneous'),
 ]
 

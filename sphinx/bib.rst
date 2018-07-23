@@ -21,7 +21,7 @@ the work referred to using its DOI identifer.
    <http://dx.doi.org/10.1088/0004-637X/698/2/1020>`_,
    Astrophys. J. **698** (2009) 1020.
 
-.. [D'Ai16] `A. D'Aí, P. A. Evans, D. N. Burrows, N. P. M. Kuin, D. A. Kann, S. Campana, A. Maselli, P. Romano, G. Cusumano, V. La Parola, S. D. Barthelmy, A. P. Beardmore, S. B. Cenko, M. De Pasquale, N. Gehrels, J. Greiner, J. A. Kennea, S. Klose, A. Melandri, J. A. Nousek, J. P. Osborne, D. M. Palmer, B. Sbarufatti, P. Schady, M. H. Siegel, G. Tagliaferri, R. Yates, and S. Zane
+.. [DAi16] `A. D'Aí, P. A. Evans, D. N. Burrows, N. P. M. Kuin, D. A. Kann, S. Campana, A. Maselli, P. Romano, G. Cusumano, V. La Parola, S. D. Barthelmy, A. P. Beardmore, S. B. Cenko, M. De Pasquale, N. Gehrels, J. Greiner, J. A. Kennea, S. Klose, A. Melandri, J. A. Nousek, J. P. Osborne, D. M. Palmer, B. Sbarufatti, P. Schady, M. H. Siegel, G. Tagliaferri, R. Yates, and S. Zane
    <https://doi.org/10.1093/mnras/stw2023>`_,
    Mon. Not. R. Astron. Soc. **463** (2016) 2394.
 
@@ -57,6 +57,10 @@ the work referred to using its DOI identifer.
 .. [Steiner15un] `A. W. Steiner, S. Gandolfi, F. J. Fattoyev, and W. G. Newton
    <https://doi.org/10.1103/PhysRevC.91.015804>`_,
    Phys. Rev. C **91** (2015) 015804.
+
+.. [Steiner16ns] `A. W. Steiner, J. M. Lattimer, and E. F. Brown
+   <http://doi.org/10.1140/epja/i2016-16018-1>`_,
+   Eur. Phys. J. A **52** (2016) 18.
 
 .. [Woods07] `P. M. Woods, C., Kouveliotou, M. H. Finger, E. Göğóś, C. A. Wilson, S. K. Patel, K. Hurley, and J. H. Swank
    <https://doi.org/10.1086/507459>`_,

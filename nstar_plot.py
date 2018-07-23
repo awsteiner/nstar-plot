@@ -36,10 +36,6 @@ import urllib.request
 import o2sclpy
 from load_crust import load_crust
 
-# Internal code for parsing .bib and creating html
-if 0:
-    os.system("btmanip -parse refs.bib -hay nstar_plot_refs.html")
-
 update_plot_files=False
 
 class nstar_plot(load_crust):
