@@ -48,13 +48,17 @@ int main(void) {
   // Get full EOS including crust
   table_units<> teos;
   teos.line_of_names("ed pr");
-  teos.line_of_units("MeV/fm^3 MeV/fm^3");
-  for(double pr=1.0e-1;pr<1.0e3;pr*=1.2) {
+  teos.line_of_units("1/fm^4 1/fm^4");
+  for(double pr=8.0e-4;pr<1.0e1;pr*=1.2) {
     double ed, nb;
-    nc.def_eos_tov.get_eden_user(pr/hc_mev_fm,ed,nb);
-    double line[2]={pr,ed*hc_mev_fm};
+    nc.def_eos_tov.get_eden_user(pr,ed,nb);
+    double line[2]={ed,pr};
     teos.line_of_data(2,line);
   }
+
+  // Remove rows beyond maximum mass
+  shared_ptr<table_units<> > tmvsr=nc.get_tov_results();
+  tmvsr->set_nlines(tmvsr->lookup("gm",tmvsr->max("gm"))+1);
 
   // Output the table(s) to file(s)
   hdf_file hf;
