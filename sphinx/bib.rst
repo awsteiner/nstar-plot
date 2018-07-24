@@ -46,6 +46,10 @@ the work referred to using its DOI identifer.
     Thesis: Structural investigation of La(2-x)Sr(x)CuO(4+y)
     (2015).
 
+.. [Steiner05ia] `A. W. Steiner, M. Prakash, J. M. Lattimer, and P. J. Ellis
+   <http://doi.org/10.1016/j.physrep.2005.02.004>`_,
+   Phys. Rep. **411** (2005) 325.
+
 .. [Steiner12dc] `A. W. Steiner
    <https://doi.org/10.1103/PhysRevC.85.055804>`_,
    Phys. Rev. C **85** (2012) 055804.

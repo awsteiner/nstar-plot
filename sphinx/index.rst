@@ -20,19 +20,19 @@ output uses the ImageMagick utility `convert`.
 The limits on the magnetic field come from a maximum
 of :math:`B=2 \times 10^{15}~\mathrm{G}` for
 SGR 1806-20 [Woods07]_ and the minimum from estimates
-using the :math:`P-\dot{P}` diagrams in [Karako-Argaman15]_ .
+using the :math:`P-\dot{P}` diagrams in [Karako-Argaman15]_.
 
 The slowest rotation rate is :math:`4.2 \times 10^{-5}~\mathrm{Hz}`
 for magnetar 1E 161348-5055 in [DAi16]_ and the fastest observed
 rotation rate is :math:`716~\mathrm{Hz}` for PSR J1748-2446ad in
-[Hessels06]_ .
+[Hessels06]_. 
 
-The radius range in the cutaway is taken from [Steiner16ns]_ .
+The radius range in the cutaway is taken from [Steiner16ns]_.
 
 The crust properties are from the SLy4 model in [Steiner12dc]_.
 
 The limits on the tidal deformability, moment of inertia, core energy
-density, and core baryon density are taken from [Steiner15un]_ .
+density, and core baryon density are taken from [Steiner15un]_.
 
 The python code contains several options which can be easily changed
 to change the look of the plot. 
@@ -42,7 +42,13 @@ to change the look of the plot.
 
 EOS and M-R curve plot
 ----------------------
-	     
+
+This is the EOS and M-R curve for Skyrme model NRAPR from
+[Steiner05ia]_. The C++ code to generate the EOS and M-R data is in
+`eos_mvsr.cpp` and this code creates the file `eos_mvsr.o2`. This is
+the data file used by the python code to create the figure in
+`eos_mvsr.py`.
+
 .. image:: ../eos_mvsr.png
    :width: 70%
 
@@ -55,13 +61,15 @@ Neutron star crust plot
 History of superconductivity plot
 ---------------------------------
 
-Based on P.J. Ray's work at [Ray15]_ .
+Information on terrestrial superconductors based on P.J. Ray's work at
+[Ray15]_. Nucleonic and quark gaps from [Barrois77]_, [Brown09]_, and
+[Page09ne]_ .
 	   
 .. image:: ../sfluid3.png
    :width: 70%
 	     
-Origin of the elements
-----------------------
+Origin of the elements periodic table
+-------------------------------------
 	   
 .. image:: ../periodic_table.png
    :width: 70%
