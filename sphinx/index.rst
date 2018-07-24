@@ -5,17 +5,25 @@ This documentation was generated from git commit
 
 .. include:: commit.rst
 
+General notes
+-------------
+
+Some of the plots use data which is generated using C++ code which
+requires `O2scl <https://isospin.roam.utk.edu/static/code/o2scl>`_.
+The python plots often require `O2sclpy
+<https://isospin.roam.utk.edu/static/code/o2sclpy>`_ (but not `O2scl
+<https://isospin.roam.utk.edu/static/code/o2scl>`_ since they
+don't use the `o2graph_plotter` class).
+
 Neutron star plot
 -----------------
 
 Based on Dany Page's excellent work `here
 <http://www.astroscu.unam.mx/neutrones/home.html>`_. The python code
 is in `nstar_plot.py` which also uses some of the functions in
-`load_crust.py`. This figure requires `O2sclpy
-<https://isospin.roam.utk.edu/static/code/o2sclpy>`_ but not `O2scl
-<https://isospin.roam.utk.edu/static/code/o2scl>`_. Because
-`matplotlib` has a hard time rendering the fills properly, the `PNG`
-output uses the ImageMagick utility `convert`.
+`load_crust.py`. This figure . Because `matplotlib` has a hard time
+rendering the fills properly, the `PNG` output uses the ImageMagick
+utility `convert`.
 
 The limits on the magnetic field come from a maximum
 of :math:`B=2 \times 10^{15}~\mathrm{G}` for
@@ -23,9 +31,10 @@ SGR 1806-20 [Woods07]_ and the minimum from estimates
 using the :math:`P-\dot{P}` diagrams in [Karako-Argaman15]_.
 
 The slowest rotation rate is :math:`4.2 \times 10^{-5}~\mathrm{Hz}`
-for magnetar 1E 161348-5055 in [DAi16]_ and the fastest observed
-rotation rate is :math:`716~\mathrm{Hz}` for PSR J1748-2446ad in
-[Hessels06]_. 
+for magnetar 1E 161348-5055 in [DAi16]_ (see also
+:math:`0.085~\mathrm{Hz}` for 1E 1841-045 in [Dib14]_), and the
+fastest observed rotation rate is :math:`716~\mathrm{Hz}` for PSR
+J1748-2446ad in [Hessels06]_.
 
 The radius range in the cutaway is taken from [Steiner16ns]_.
 
@@ -62,15 +71,17 @@ History of superconductivity plot
 ---------------------------------
 
 Information on terrestrial superconductors based on P.J. Ray's work at
-[Ray15]_. Nucleonic and quark gaps from [Barrois77]_, [Brown09]_, and
-[Page09ne]_ .
+[Ray15]_. Nucleonic and quark gaps from [Bohr58]_, [Barrois77]_,
+[Brown09]_, and [Page09ne]_ .
 	   
 .. image:: ../sfluid3.png
    :width: 70%
 	     
 Origin of the elements periodic table
 -------------------------------------
-	   
+
+Based on [Lodders03]_, [Simmerer04]_, [Johnson17]_, [Ivans17]_, ...
+
 .. image:: ../periodic_table.png
    :width: 70%
 	     

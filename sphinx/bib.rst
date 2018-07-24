@@ -33,9 +33,22 @@ the work referred to using its DOI identifer.
    <https://doi.org/10.1126/science.1123430>`_,
    Science **311** (2006) 1901.
 
+.. [Ivans17] `I. Ivans
+    <http://cosmic-origins.org/>`_,
+    Web page: Origins of the Elements(2017).
+
+.. [Johnson17] `J. Johnson
+    <http://blog.sdss.org/2017/01/09/origin-of-the-elements-in-the-solar-system/>`_,
+    Web page: Origin of the Elements in the Solar System
+                  (2017).
+
 .. [Karako-Argaman15] `C. Karako-Argaman, V. M. Kaspi, R. S. Lynch, J. W. T. Hessels, V. I. Kondratiev, M. A. McLaughlin, S. M. Ransom, A. M. Archibald, J. Boyles, F. A. Jenet, D. L. Kaplan, L. Levin, D. R. Lorimer, E. C. Madsen, M. S. E. Roberts, X. Siemens, I. H. Stairs, K. Stovall, J. K. Swiggum, and J. van Leeuwen
    <https://doi.org/10.1088/0004-637X/809/1/67>`_,
    Astrophys. J. **809** (2015) 67.
+
+.. [Lodders03] `K. Lodders
+   <https://dx.doi.org/10.1086/375492>`_,
+   Astrophys. J. **591** (2003) 1220.
 
 .. [Page09ne] `D. Page, J. M. Lattimer, M. Prakash, and A. W. Steiner
    <https://doi.org/10.1088/0004-637X/707/2/1131>`_,
@@ -69,4 +82,8 @@ the work referred to using its DOI identifer.
 .. [Woods07] `P. M. Woods, C., Kouveliotou, M. H. Finger, E. Göğóś, C. A. Wilson, S. K. Patel, K. Hurley, and J. H. Swank
    <https://doi.org/10.1086/507459>`_,
    Astrophys. J. **654** (2007) 470.
+
+.. [Simmerer04] `J. Simmerer, C. Sneden, J. J. Cowan, J. Collier, V. M. Woolf, and J. E. Lawler
+   <https://dx.doi.org/10.1086/424504>`_,
+   Astrophys. J **617** (2004) 1091.
 
