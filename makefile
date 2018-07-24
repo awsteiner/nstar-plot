@@ -29,3 +29,9 @@ crust_plot.o: crust_plot.cpp
 crust_plot: crust_plot.o
 	$(CXX) $(FLAGS) -o crust_plot crust_plot.o $(LIB)
 
+eos_mvsr.o: eos_mvsr.cpp
+	$(CXX) $(FLAGS) -o eos_mvsr.o -c eos_mvsr.cpp
+
+eos_mvsr: eos_mvsr.o
+	$(CXX) $(FLAGS) -o eos_mvsr eos_mvsr.o $(LIB)
+

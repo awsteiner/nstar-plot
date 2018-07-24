@@ -25,17 +25,8 @@ import h5py
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plot
 import o2sclpy
+import os
 
-list_of_dsets=[]
-
-# H5py read function from O2scl
-def hdf5_is_object_type(name,obj):
-    if isinstance(obj,h5py.Group):
-        if 'o2scl_type' in obj.keys():
-            o2scl_type_dset=obj['o2scl_type']
-            if o2scl_type_dset.__getitem__(0) == search_type:
-                list_of_dsets.append(name)
-                
 """ -------------------------------------------------------------------
 Class definition
 """
@@ -44,8 +35,9 @@ class eos_mvsr_plot:
     ax1=0
     ax2=0
 
-    # Default plot function from O2scl
-    def default_plot(self,lmar=0.14,bmar=0.12,rmar=0.04,tmar=0.04):
+    # Main run()
+    def run(self):
+        
         plot.rc('text',usetex=True)
         plot.rc('font',family='serif')
         plot.rcParams['lines.linewidth']=0.5
@@ -60,25 +52,11 @@ class eos_mvsr_plot:
         self.ax2.tick_params('both',length=5,width=1,which='minor')
         self.fig.set_facecolor('white')
         plot.grid(False)
-
-    # H5py read function from O2scl
-    def h5read_type_named(self,fname,loc_type,name):
-        del list_of_dsets[:]
-        global search_type
-        search_type=loc_type
-        file=h5py.File(fname,'r')
-        file.visititems(hdf5_is_object_type)
-        if name in list_of_dsets:
-            return file[name]
-            str=('No object of type '+loc_type+' named '+name+
-                 ' in file '+fname+'.')
-            raise RuntimeError(str)
-            return
-
-    # Main run()
-    def run(self):
-        self.default_plot()
-        dset=self.h5read_type_named('eos.o2','table','full_eos')
+        
+        h5r=o2sclpy.hdf5_reader()
+        print(type(h5r))
+        dset=h5r.h5read_type_named('eos_mvsr.o2','table','eos')
+        
         # Convert to MeV/fm^3
         ed2=[dset['data/ed'][i]*197.33 for i in 
              range(0,len(dset['data/ed']))]
