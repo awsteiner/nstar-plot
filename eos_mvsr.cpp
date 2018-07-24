@@ -35,17 +35,17 @@ int main(void) {
 
   cout.setf(ios::scientific);
 
-  // Skyrme EOS for core
+  // Skyrme EOS NRAPR for core
   eos_had_skyrme sk;
   skyrme_load(sk,"NRAPR");
 
-  // Neutron star structure
+  // Neutron star structure (default crust)
   nstar_cold nc;
   nc.set_eos(sk);
   nc.calc_eos();
   nc.calc_nstar();
 
-  // Get full EOS including crust
+  // Get full EOS including crust in 1/fm^4 units
   table_units<> teos;
   teos.line_of_names("ed pr");
   teos.line_of_units("1/fm^4 1/fm^4");
