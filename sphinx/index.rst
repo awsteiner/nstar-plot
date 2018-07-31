@@ -13,17 +13,17 @@ requires `O2scl <https://isospin.roam.utk.edu/static/code/o2scl>`_.
 The python plots often require `O2sclpy
 <https://isospin.roam.utk.edu/static/code/o2sclpy>`_ (but not `O2scl
 <https://isospin.roam.utk.edu/static/code/o2scl>`_ since they
-don't use the `o2graph_plotter` class).
+don't use the ``o2graph_plotter`` class).
 
 Neutron star plot
 -----------------
 
 Based on Dany Page's excellent work `here
 <http://www.astroscu.unam.mx/neutrones/home.html>`_. The python code
-is in `nstar_plot.py` which also uses some of the functions in
-`load_crust.py`. This figure . Because `matplotlib` has a hard time
-rendering the fills properly, the `PNG` output uses the ImageMagick
-utility `convert`.
+is in ``nstar_plot.py`` which also uses some of the functions in
+``load_crust.py``. Because ``matplotlib`` has a hard time
+rendering the fills properly, the ``PNG`` output uses the ImageMagick
+utility ``convert``.
 
 The limits on the magnetic field come from a maximum
 of :math:`B=2 \times 10^{15}~\mathrm{G}` for
