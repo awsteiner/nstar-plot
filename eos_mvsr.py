@@ -85,7 +85,7 @@ class eos_mvsr_plot:
                       fontsize=24,va='center',ha='center',
                       transform=self.ax2.transAxes,rotation=90)
         #
-        self.fig.text(0.41,0.37,(r'$\leftarrow \stackrel{\frac{dP}{dr}='+
+        self.fig.text(0.42,0.37,(r'$\leftarrow \stackrel{\frac{dP}{dr}='+
                                  r'-\frac{G m \varepsilon}'+
                                  r'{r^2}\left(1+\frac{P}{\varepsilon}\right)'+
                                  r'\left(1+\frac{4 \pi P r^3}{m}\right)'+
@@ -94,10 +94,9 @@ class eos_mvsr_plot:
                                  r'\mathrm{correspondence}}}'+
                                  r'\rightarrow$'),
                       fontsize=28,va='center',ha='center',
-                      transform=self.ax1.transAxes,zorder=10,
+                      zorder=10,
                       bbox=dict(facecolor=(0.75,0.75,1.0),lw=0))
-        plot.savefig('eos_mvsr.png')
-        plot.savefig('eos_mvsr.eps')
+        plot.savefig('eos_mvsr.pdf')
         plot.show()
 
 """ -------------------------------------------------------------------
