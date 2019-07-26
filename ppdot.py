@@ -1,10 +1,64 @@
 import matplotlib.pyplot as plot
 import o2sclpy
 
+rrats=[dict()]
+index=0
+f=open('ns_data/rratalog.txt')
+for line in f:
+    if index>0 and line[0]!='#':
+        if 0:
+            name=line[0:12].replace(' ','')
+            P=line[16:21].replace(' ','')
+            Pdot=line[25:30].replace(' ','')
+            DM=line[33:37].replace(' ','')
+            RA=line[41:49].replace(' ','')
+            DEC=line[52:61].replace(' ','')
+            l=line[65:71].replace(' ','')
+            b=line[72:78].replace(' ','')
+            Rate=line[81:86].replace(' ','')
+        else:
+            line=line.split()
+            name=line[0]
+            P=line[1]
+            Pdot=line[2]
+            DM=line[3]
+            RA=line[4]
+            DEC=line[5]
+            l=line[6]
+            b=line[7]
+            Rate=line[8]
+            logB=line[9]
+            logts=line[10]
+            Dhat=line[11]
+            FluxD=line[12]
+            Pulse_Width=line[13]
+            Survey=line[14]
+        dvalue={'name': name,
+                'P': P,
+                'Pdot': Pdot,
+                'DM': DM,
+                'RA': RA,
+                'DEC': DEC,
+                'l': l,
+                'b': b,
+                'Rate': Rate,
+                'logB': logB,
+                'logts': logts,
+                'Dhat': Dhat,
+                'FluxD': FluxD,
+                'Pulse_Width': Pulse_Width,
+                'Survey': Survey}
+        if index!=1:
+            rrats.append(dict())
+        rrats[index-1]=dvalue
+    index=index+1
+f.close()
+print('Read',len(rrats),'RRATs')
+
 # Parse the database. The database is a list of dictionaries
 # and subdictionaries. 
 psrcat=[dict()]
-f=open("psrcat/psrcat.db")
+f=open('ns_data/psrcat.db')
 index=0
 need_new=True
 for line in f:
@@ -38,16 +92,10 @@ for line in f:
         # We have reached a separator, so if there is more data
         # we need to add an entry to the list
         need_new=True
-print('Read',len(psrcat),'entries.')
+f.close()
+print('Read',len(psrcat),'pulsar entries.')
 
 o2=o2sclpy.plotter()
-
-x=[]
-y=[]
-for i in range(0,len(psrcat)):
-    if 'P0' in psrcat[i] and 'P1' in psrcat[i]:
-        x.append(float(psrcat[i]['P0']['value']))
-        y.append(float(psrcat[i]['P1']['value']))
 
 (fig,ax)=o2sclpy.default_plot(left_margin=0.14,bottom_margin=0.11,
                               right_margin=0.01,
@@ -58,7 +106,25 @@ plot.xlim([1.0e-3,20.0])
 plot.ylim([1.0e-22,1.0e-8])
 plot.xlabel('$$ P~(\mathrm{s}) $$',fontsize=16)
 plot.ylabel('$$ \dot{P} $$',fontsize=16)
+
+x=[]
+y=[]
+for i in range(0,len(psrcat)):
+    if 'P0' in psrcat[i] and 'P1' in psrcat[i]:
+        x.append(float(psrcat[i]['P0']['value']))
+        y.append(float(psrcat[i]['P1']['value']))
+
 plot.scatter(x,y,marker='.',color='black')
+
+x=[]
+y=[]
+for i in range(0,len(rrats)):
+    if rrats[i]['P']!='--' and rrats[i]['Pdot']!='--':
+        x.append(float(rrats[i]['P']))
+        y.append(float(rrats[i]['Pdot'])*1.0e-15)
+        print(x[len(x)-1],y[len(y)-1])
+
+plot.scatter(x,y,marker='s',color='blue')
 
 for logB in range(8,16):
     yleft=(10.0**logB/3.3e19)**2.0/1.0e-3
