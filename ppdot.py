@@ -78,6 +78,7 @@ for log_tau in range(2,12):
         ax.text(7.0,yright*1.0,'$$ 10^{'+str(log_tau)+'}~\mathrm{yr} $$',
                 fontsize=12,color='blue')
 
+plot.savefig('ppdot.pdf')        
 plot.show()
 
 
