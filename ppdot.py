@@ -1,5 +1,9 @@
+import math
 import matplotlib.pyplot as plot
 import o2sclpy
+
+# Gauss in fm^{-2}
+gauss_fm2=math.sqrt(3.16303e-36)
 
 rrats=[dict()]
 index=0
@@ -95,6 +99,13 @@ for line in f:
 f.close()
 print('Read',len(psrcat),'pulsar entries.')
 
+magnetars=[]
+f=open('ns_data/magnetar2.txt')
+for line in f:
+    line=line.split(' ')
+    magnetars.append(line)
+f.close()
+
 o2=o2sclpy.plotter()
 
 (fig,ax)=o2sclpy.default_plot(left_margin=0.14,bottom_margin=0.11,
@@ -109,12 +120,19 @@ plot.ylabel('$$ \dot{P} $$',fontsize=16)
 
 x=[]
 y=[]
+x2=[]
+y2=[]
 for i in range(0,len(psrcat)):
     if 'P0' in psrcat[i] and 'P1' in psrcat[i]:
-        x.append(float(psrcat[i]['P0']['value']))
-        y.append(float(psrcat[i]['P1']['value']))
+        if 'BINCOMP' in psrcat[i] or 'BINARY' in psrcat[i]:
+            x2.append(float(psrcat[i]['P0']['value']))
+            y2.append(float(psrcat[i]['P1']['value']))
+        else:
+            x.append(float(psrcat[i]['P0']['value']))
+            y.append(float(psrcat[i]['P1']['value']))
 
-plot.scatter(x,y,marker='.',color='black')
+plot.plot(x,y,marker='.',color='black',lw=0)
+plot.plot(x2,y2,marker='o',mfc='white',color='black',lw=0)
 
 x=[]
 y=[]
@@ -122,10 +140,19 @@ for i in range(0,len(rrats)):
     if rrats[i]['P']!='--' and rrats[i]['Pdot']!='--':
         x.append(float(rrats[i]['P']))
         y.append(float(rrats[i]['Pdot'])*1.0e-15)
-        print(x[len(x)-1],y[len(y)-1])
+        #print(x[len(x)-1],y[len(y)-1])
 
 plot.scatter(x,y,marker='s',color='blue')
 
+x=[]
+y=[]
+for i in range(0,len(magnetars)):
+    x.append(float(magnetars[i][2]))
+    y.append(float(magnetars[i][4])*1.0e-11)
+    #print(x[len(x)-1],y[len(y)-1])
+
+plot.scatter(x,y,marker='s',color='red')
+        
 for logB in range(8,16):
     yleft=(10.0**logB/3.3e19)**2.0/1.0e-3
     plot.plot([1.0e-3,20.0],[yleft,
@@ -143,6 +170,9 @@ for log_tau in range(2,12):
     if log_tau>1:
         ax.text(7.0,yright*1.0,'$$ 10^{'+str(log_tau)+'}~\mathrm{yr} $$',
                 fontsize=12,color='blue')
+
+plot.plot([1.0e-3,20.0],[10**(2.0*(-3.0)-16.52),
+                         10**(2.0*math.log10(20.0)-16.52)],color='green')
 
 plot.savefig('ppdot.pdf')        
 plot.show()
