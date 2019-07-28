@@ -1,3 +1,25 @@
+"""
+-------------------------------------------------------------------
+
+Copyright (C) 2019, Andrew W. Steiner
+
+This neutron star plot is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 3 of
+the License, or (at your option) any later version.
+
+This neutron star plot is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this neutron star plot. If not, see
+<http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------
+
+"""
 import math
 import matplotlib.pyplot as plot
 import o2sclpy
@@ -106,6 +128,11 @@ for line in f:
     magnetars.append(line)
 f.close()
 
+xlo=1.0e-3
+xhi=30.0
+ylo=1.0e-22
+yhi=1.0e-8
+
 o2=o2sclpy.plotter()
 
 (fig,ax)=o2sclpy.default_plot(left_margin=0.14,bottom_margin=0.11,
@@ -113,8 +140,8 @@ o2=o2sclpy.plotter()
                               top_margin=0.02,rt_ticks=True,ticks_in=True)
 ax.set_xscale('log')
 ax.set_yscale('log')
-plot.xlim([1.0e-3,20.0])
-plot.ylim([1.0e-22,1.0e-8])
+plot.xlim([xlo,xhi])
+plot.ylim([ylo,yhi])
 plot.xlabel('$$ P~(\mathrm{s}) $$',fontsize=16)
 plot.ylabel('$$ \dot{P} $$',fontsize=16)
 
@@ -154,25 +181,47 @@ for i in range(0,len(magnetars)):
 plot.scatter(x,y,marker='s',color='red')
         
 for logB in range(8,16):
-    yleft=(10.0**logB/3.3e19)**2.0/1.0e-3
-    plot.plot([1.0e-3,20.0],[yleft,
-                             (10.0**logB/3.3e19)**2.0/20.0],ls=':',
+    xright=10.0
+    yleft=(10.0**logB/3.3e19)**2.0/xlo
+    plot.plot([xlo,xright],[yleft,
+                             (10.0**logB/3.3e19)**2.0/xright],ls=':',
               color='black')
-    if logB>8 and logB<14:
-        ax.text(1.6e-3,yleft*0.9,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+    if logB>8 and logB<13:
+        ax.text(2.1e-3,yleft*0.78,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+                fontsize=12)
+    elif logB==13:
+        ax.text(2.1e-3,yleft*0.78,'$$ B=10^{'+str(logB)+'}~\mathrm{G} $$',
+                fontsize=12)
+    elif logB==14:
+        ax.text(1.5e-2,1.0e-9,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+                fontsize=12)
+    elif logB==15:
+        ax.text(1.05,1.0e-9,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
                 fontsize=12)
 
 for log_tau in range(2,12):
-    yright=0.5/(10.0**log_tau*31556926)*20.0
-    plot.plot([1.0e-3,20.0],[0.5/(10.0**log_tau*31556926)*1.0e-3,
+    line_left=xlo*10.0
+    if log_tau>9:
+        line_left=xlo
+    text_x=14.0
+    
+    yright=0.5/(10.0**log_tau*31556926)*xhi
+    plot.plot([line_left,xhi],[0.5/(10.0**log_tau*31556926)*line_left,
                              yright],ls=':',
               color='blue')
-    if log_tau>1:
-        ax.text(7.0,yright*1.0,'$$ 10^{'+str(log_tau)+'}~\mathrm{yr} $$',
+    if log_tau==10:
+        ax.text(text_x*0.85,yright*0.9,'$$ 10^{'+str(log_tau)+'} $$',
+                fontsize=12,color='blue')
+    elif log_tau>3:
+        ax.text(text_x,yright*0.9,'$$ 10^{'+str(log_tau)+'} $$',
+                fontsize=12,color='blue')
+    elif log_tau>2:
+        ax.text(text_x*0.85,yright*1.0,
+                '$$ 10^{'+str(log_tau)+'}~\mathrm{yr} $$',
                 fontsize=12,color='blue')
 
-plot.plot([1.0e-3,20.0],[10**(2.0*(-3.0)-16.52),
-                         10**(2.0*math.log10(20.0)-16.52)],color='green')
+plot.plot([xlo,xhi*0.4],[10**(2.0*(-3.0)-16.52),
+                         10**(2.0*math.log10(xhi*0.4)-16.52)],color='green')
 
 plot.savefig('ppdot.pdf')        
 plot.show()
