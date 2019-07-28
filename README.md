@@ -16,4 +16,6 @@ http://dx.doi.org/10.6084/m9.figshare.2075680.v2
 
 ![Origin of the Elements](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/periodic_table.png)
 
+![P Pdot diagram](https://raw.githubusercontent.com/awsteiner/nstar-plot/master/ppdot.png)
+
 

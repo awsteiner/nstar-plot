@@ -85,6 +85,12 @@ Based on [Lodders03]_, [Simmerer04]_, [Johnson17]_, [Ivans17]_, ...
 .. image:: ../periodic_table.png
    :width: 70%
 	     
+P pdot diagram
+--------------
+
+.. image:: ../ppdot.png
+   :width: 70%
+	     
 .. toctree::
    :maxdepth: 2
 

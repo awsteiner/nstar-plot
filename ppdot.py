@@ -20,9 +20,17 @@ along with this neutron star plot. If not, see
 -------------------------------------------------------------------
 
 """
+# Death line from Zhang et al. APJL 631 (2000) 138
+# Pulsars from ATNF database
+# Magnetars from McGill
+# RRATs from WVU
+#
 import math
 import matplotlib.pyplot as plot
 import o2sclpy
+
+# For rectangles
+import matplotlib.patches as patches
 
 # Gauss in fm^{-2}
 gauss_fm2=math.sqrt(3.16303e-36)
@@ -169,7 +177,7 @@ for i in range(0,len(rrats)):
         y.append(float(rrats[i]['Pdot'])*1.0e-15)
         #print(x[len(x)-1],y[len(y)-1])
 
-plot.scatter(x,y,marker='s',color='blue')
+plot.scatter(x,y,marker='*',color='blue')
 
 x=[]
 y=[]
@@ -223,7 +231,37 @@ for log_tau in range(2,12):
 plot.plot([xlo,xhi*0.4],[10**(2.0*(-3.0)-16.52),
                          10**(2.0*math.log10(xhi*0.4)-16.52)],color='green')
 
+# Legend
+r=patches.Rectangle((0.2,2.0e-22),20.0,4.0e-19,0,lw=0,fc='white',fill=True,
+                    zorder=20)
+ax.add_patch(r)
+
+top=1.0e-19
+fact=5.0
+
+plot.plot([0.3],[top],marker='s',mfc='red',mew=0,lw=0,zorder=21)
+ax.text(0.4,top,
+        '$$ \mathrm{Magnetars} $$',
+        fontsize=16,color='black',ha='left',va='center',zorder=21)
+top=top/fact
+plot.plot([0.3],[top],marker='*',mfc='blue',mew=0,lw=0,zorder=21)
+ax.text(0.4,top,
+        '$$ \mathrm{RRATs} $$',
+        fontsize=16,color='black',ha='left',va='center',zorder=21)
+top=top/fact
+plot.plot([0.3],[top],marker='.',mfc='black',mew=0,lw=0,zorder=21)
+ax.text(0.4,top,
+        '$$ \mathrm{Pulsars} $$',
+        fontsize=16,color='black',ha='left',va='center',zorder=21)
+top=top/fact
+plot.plot([0.3],[top],marker='o',mec='black',mew=1,lw=0,zorder=21,
+          mfc='white')
+ax.text(0.4,top,
+        '$$ \mathrm{Pulsars (binaries)} $$',
+        fontsize=16,color='black',ha='left',va='center',zorder=21)
+
 plot.savefig('ppdot.pdf')        
+plot.savefig('ppdot.png')        
 plot.show()
 
 
