@@ -141,6 +141,10 @@ xhi=30.0
 ylo=1.0e-22
 yhi=1.0e-8
 
+xdins=[
+    
+    ]
+
 o2=o2sclpy.plotter()
 
 (fig,ax)=o2sclpy.default_plot(left_margin=0.14,bottom_margin=0.11,
