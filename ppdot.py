@@ -136,6 +136,18 @@ for line in f:
     magnetars.append(line)
 f.close()
 
+# From Rigoselli et al. (2019), ignoring J1605.3+3249 which doesn't
+# have P and Pdot data
+xdins=[
+    ['J0420.0-5022',3.45,2.76],
+    ['J0720.4-3125',16.78,18.6],
+    ['J0806.4-4123',11.37,5.6],
+    ['J1308.6+2127',10.31,11.2],
+    ['J1856.5-3754',7.06,2.98],
+    ['J2143.0+0654',9.43,4.1],
+    ['J0726.0-2612',3.44,29.3]
+]
+
 xlo=1.0e-3
 xhi=30.0
 ylo=1.0e-22
@@ -191,6 +203,15 @@ for i in range(0,len(magnetars)):
     #print(x[len(x)-1],y[len(y)-1])
 
 plot.scatter(x,y,marker='s',color='red')
+
+x=[]
+y=[]
+for i in range(0,len(xdins)):
+    x.append(xdins[i][1])
+    y.append(xdins[i][2]*1.0e-14)
+    #print(x[len(x)-1],y[len(y)-1])
+
+plot.scatter(x,y,marker='v',color='green')
         
 for logB in range(8,16):
     xright=10.0
@@ -247,17 +268,29 @@ plot.plot([0.3],[top],marker='s',mfc='red',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
         '$$ \mathrm{Magnetars} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
+
 top=top/fact
+
 plot.plot([0.3],[top],marker='*',mfc='blue',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
         '$$ \mathrm{RRATs} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
+
+fact2=15.0
+plot.plot([0.3*fact2],[top],marker='v',mfc='green',mew=0,lw=0,zorder=21)
+ax.text(0.4*fact2,top,
+        '$$ \mathrm{XDINs} $$',
+        fontsize=16,color='black',ha='left',va='center',zorder=21)
+
 top=top/fact
+
 plot.plot([0.3],[top],marker='.',mfc='black',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
         '$$ \mathrm{Pulsars} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
+
 top=top/fact
+
 plot.plot([0.3],[top],marker='o',mec='black',mew=1,lw=0,zorder=21,
           mfc='white')
 ax.text(0.4,top,
