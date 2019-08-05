@@ -24,6 +24,7 @@ along with this neutron star plot. If not, see
 # Pulsars from ATNF database
 # Magnetars from McGill
 # RRATs from WVU
+# Comparable p pdot diagram in Zhou et al. (2017) 1708.05494
 #
 import math
 import matplotlib.pyplot as plot
