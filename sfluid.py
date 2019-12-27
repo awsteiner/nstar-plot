@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------
 
-Copyright (C) 2016-2019, Andrew W. Steiner
+Copyright (C) 2016-2020, Andrew W. Steiner
 
 This python code utilizes the superconducting material properties data
 compiled by P.J. Ray at
