@@ -36,6 +36,12 @@ crust_plot.o: crust_plot.cpp
 crust_plot: crust_plot.o
 	$(CXX) $(FLAGS) -o crust_plot crust_plot.o $(LIB)
 
+lead_nuc.o: lead_nuc.cpp
+	$(CXX) $(FLAGS) -o lead_nuc.o -c lead_nuc.cpp
+
+lead_nuc: lead_nuc.o
+	$(CXX) $(FLAGS) -o lead_nuc lead_nuc.o $(LIB)
+
 eos_mvsr.o: eos_mvsr.cpp
 	$(CXX) $(FLAGS) -o eos_mvsr.o -c eos_mvsr.cpp
 
