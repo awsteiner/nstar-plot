@@ -17,7 +17,8 @@ General notes
 -------------
 
 Some of the plots use data which is generated using C++ code which
-requires `O2scl <https://isospin.roam.utk.edu/static/code/o2scl>`_.
+requires `O2scl
+<https://isospin.roam.utk.edu/static/code/o2scl>`_.
 The python plots often require `O2sclpy
 <https://isospin.roam.utk.edu/static/code/o2sclpy>`_ (but not `O2scl
 <https://isospin.roam.utk.edu/static/code/o2scl>`_ since they
@@ -98,7 +99,15 @@ P pdot diagram
 
 .. image:: ../ppdot.png
    :width: 70%
-	     
+
+Lead nucleus cartoon
+--------------------
+	   
+.. raw:: html
+	 
+   <video width="512" height="512" controls><source src="https://neutronstars.utk.edu/code/nstar_plot/_static/lead_nuc.mp4" type="video/mp4"></video>
+
+	   
 .. toctree::
    :maxdepth: 2
 
