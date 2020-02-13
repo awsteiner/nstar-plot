@@ -5,6 +5,14 @@ This documentation was generated from git commit
 
 .. include:: commit.rst
 
+Licensing
+---------
+
+The C++ and python code provided here is license under the
+:download:`GNU General Public License (v3)<static/gpl_license.txt>`
+and the plots themselves, as provided in the repository, are
+licensed as :download:`CC-BY-NC (4.0)<static/cc_by_nc_4.md>`.
+	     
 General notes
 -------------
 
