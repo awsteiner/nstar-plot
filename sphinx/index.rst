@@ -20,9 +20,9 @@ Some of the plots use data which is generated using C++ code which
 requires `O2scl
 <https://isospin.roam.utk.edu/static/code/o2scl>`_.
 The python plots often require `O2sclpy
-<https://isospin.roam.utk.edu/static/code/o2sclpy>`_ (but not `O2scl
-<https://isospin.roam.utk.edu/static/code/o2scl>`_ since they
-don't use the ``o2graph_plotter`` class).
+<https://isospin.roam.utk.edu/static/code/o2sclpy>`_ (only
+those that use the ``o2graph_plotter`` class require `O2scl
+<https://isospin.roam.utk.edu/static/code/o2scl>`_).
 
 Plots
 -----
@@ -45,7 +45,7 @@ Plots
 
      - .. image:: ../sfluid3.png
 
-       :ref:`Superconductivity`
+       :ref:`History of Superconductivity`
 
    * - .. image:: ../periodic_table.png
      
@@ -63,6 +63,9 @@ Plots
 
      - 
 
+Contents
+--------
+     
 .. toctree::
    :maxdepth: 2
 

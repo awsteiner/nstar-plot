@@ -1,5 +1,5 @@
-Superconductivity
------------------
+History of Superconductivity
+----------------------------
 
 Information on terrestrial superconductors based on P.J. Ray's work at
 [Ray15]_. Nucleonic and quark gaps from [Bohr58]_, [Barrois77]_,

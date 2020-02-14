@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'nstar-plot'
-copyright = '2015-2019, Andrew W. Steiner'
+copyright = '2015-2020, Andrew W. Steiner'
 author = 'Andrew W. Steiner'
 
 # The version info for the project you're documenting, acts as replacement for
