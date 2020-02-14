@@ -1,4 +1,4 @@
-Neutron Star-Related Plots
+Neutron star-related plots
 ==========================
 
 This documentation was generated from git commit

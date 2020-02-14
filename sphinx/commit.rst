@@ -1,1 +1,1 @@
-`c70ae32872c3605c92aad98ca7dc73522de9e38f <http://github.com/awsteiner/nstar-plot/tree/c70ae32872c3605c92aad98ca7dc73522de9e38f>`_
+`ebc911279ad1c70bd6db3e1574af22b0bdd68ff0 <http://github.com/awsteiner/nstar-plot/tree/ebc911279ad1c70bd6db3e1574af22b0bdd68ff0>`_
