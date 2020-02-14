@@ -55,7 +55,9 @@ Plots
 
        :ref:`P pdot diagram`
 
-   * - .. image:: ../lead_nuc.png
+   * - .. raw:: html
+	 
+          <video width="256" height="256" controls><source src="https://neutronstars.utk.edu/code/nstar_plot/_static/lead_nuc.mp4" type="video/mp4"></video>
      
        :ref:`Lead nucleus cartoon`
 
