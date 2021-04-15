@@ -10,11 +10,11 @@ is chosen to be time-independent, the movie just rotates around these
 fixed positions.
 
 C++ code in `lead_nuc.cpp
-<https://github.com/awsteiner/nstar-plot/blob/master/lead_nuc.cpp>`_
+<https://github.com/awsteiner/nstar-plot/blob/main/lead_nuc.cpp>`_
 is used to generate the nucleon positions and the `o2graph
 <https://neutronstars.utk.edu/code/o2sclpy/o2graph.html>`_ script in
 `lead_nuc.scr
-<https://github.com/awsteiner/nstar-plot/blob/master/lead_nuc.scr>`_
+<https://github.com/awsteiner/nstar-plot/blob/main/lead_nuc.scr>`_
 which uses `o2sclpy <https://neutronstars.utk.edu/code/o2sclpy/>`_
 which, in turn, uses `yt <https://yt-project.org>`_ to do the
 visualization.
