@@ -39,7 +39,7 @@ int main(void) {
   probn.init(hn);
   probp.init(hp);
 
-  rng_gsl rg;
+  rng<> rg;
   rg.clock_seed();
 
   for(size_t i=0;i<126;i++) {

@@ -52,7 +52,7 @@ public:
   double r_scale;
 
   /// Random number generator
-  rng_gsl rg;
+  rng<> rg;
   
   /** \brief Compute squared distance, wrapping
       around y coordinate
@@ -205,7 +205,7 @@ int main(void) {
   }
 
   // Set up the histogram in the total particle density
-  rng_gsl rg;
+  rng<> rg;
   rg.clock_seed();
   prob_dens_hist pdh;
   pdh.init(h_ntotal);
