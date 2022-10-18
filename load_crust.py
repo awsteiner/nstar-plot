@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------
 
-Copyright (C) 2015-2020, Andrew W. Steiner
+Copyright (C) 2015-2022, Andrew W. Steiner
 
 This neutron star plot is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License
@@ -54,28 +54,43 @@ class load_crust:
     rho_116=0
     rho_117=0
 
-    def load(self):
+    # o2scl dll
+    link=0
     
+    def load(self):
+
+        hf=o2sclpy.hdf_file(self.link)
+        
         # Read inner crust data for neutrons
         if len(self.w_nn)==0:
-            hr=o2sclpy.hdf5_reader()
-            (nn_tab,loc_type)=hr.h5read_name('inner_nn.o2',
-                                             'inner_nn')
-            self.w_nn=nn_tab['data/w']
-            self.r_nn=nn_tab['data/r']
+
+            hf.open('inner_nn.o2')
+            name=o2sclpy.std_string(self.link)
+            name.init_bytes(b'inner_nn')
+            nn_tab=o2sclpy.table(self.link)
+            o2sclpy.hdf_input_n_table(self.link,hf,nn_tab,name)
+            hf.close()
+            
+            self.w_nn=nn_tab['w']
+            self.r_nn=nn_tab['r']
             self.w_nn=self.w_nn[:100000]
             self.r_nn=self.r_nn[:100000]
             print('Loaded',len(self.w_nn),'nucleons.')
             
         # Read inner crust data for nuclei
         if len(self.w_nnuc)==0:
-            (nnuc_tab,loc_type)=hr.h5read_name('inner_nnuc.o2',
-                                               'inner_nnuc')
-            self.w_nnuc=nnuc_tab['data/w']
-            self.r_nnuc=nnuc_tab['data/r']
-            self.Rn_nnuc=nnuc_tab['data/Rn']
-            self.A_nnuc=nnuc_tab['data/A']
-            self.nb_nnuc=nnuc_tab['data/nb']
+
+            hf.open('inner_nnuc.o2')
+            name.init_bytes(b'inner_nnuc')
+            nnuc_tab=o2sclpy.table(self.link)
+            o2sclpy.hdf_input_n_table(self.link,hf,nnuc_tab,name)
+            hf.close()
+
+            self.w_nnuc=nnuc_tab['w']
+            self.r_nnuc=nnuc_tab['r']
+            self.Rn_nnuc=nnuc_tab['Rn']
+            self.A_nnuc=nnuc_tab['A']
+            self.nb_nnuc=nnuc_tab['nb']
             
             nb_nnuc_temp=[abs(self.r_nnuc[i]-10.8)
                           for i in range(0,len(self.r_nnuc))]
@@ -102,14 +117,18 @@ class load_crust:
 
         # Read outer crust data for nuclei
         if len(self.w_nnuc_outer)==0:
-            hr=o2sclpy.hdf5_reader()
-            (nnuc_tab_outer,loc_type)=hr.h5read_name('outer_nnuc.o2',
-                                                     'outer_nnuc')
-            self.w_nnuc_outer=nnuc_tab_outer['data/w']
-            self.r_nnuc_outer=nnuc_tab_outer['data/r']
-            self.Rn_nnuc_outer=nnuc_tab_outer['data/Rn']
-            self.A_nnuc_outer=nnuc_tab_outer['data/A']
-            self.nb_nnuc_outer=nnuc_tab_outer['data/nb']
+            
+            hf.open('outer_nnuc.o2')
+            name.init_bytes(b'outer_nnuc')
+            nnuc_tab_outer=o2sclpy.table(self.link)
+            o2sclpy.hdf_input_n_table(self.link,hf,nnuc_tab_outer,name)
+            hf.close()
+            
+            self.w_nnuc_outer=nnuc_tab_outer['w']
+            self.r_nnuc_outer=nnuc_tab_outer['r']
+            self.Rn_nnuc_outer=nnuc_tab_outer['Rn']
+            self.A_nnuc_outer=nnuc_tab_outer['A']
+            self.nb_nnuc_outer=nnuc_tab_outer['nb']
             nb_nnuc_temp=[abs(self.r_nnuc_outer[i]-11.4)
                           for i in range(0,len(self.r_nnuc_outer))]
             self.rho_114=(self.nb_nnuc_outer[numpy.argmin(nb_nnuc_temp)]*
