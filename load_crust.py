@@ -71,10 +71,10 @@ class load_crust:
             o2sclpy.hdf_input_n_table(self.link,hf,nn_tab,name)
             hf.close()
             
-            self.w_nn=nn_tab['w']
-            self.r_nn=nn_tab['r']
-            self.w_nn=self.w_nn[:100000]
-            self.r_nn=self.r_nn[:100000]
+            self.w_nn=[nn_tab['w'][i] for i in range(0,100000)]
+            self.r_nn=[nn_tab['r'][i] for i in range(0,100000)]
+            #self.w_nn=self.w_nn[:100000]
+            #self.r_nn=self.r_nn[:100000]
             print('Loaded',len(self.w_nn),'nucleons.')
             
         # Read inner crust data for nuclei
@@ -86,11 +86,20 @@ class load_crust:
             o2sclpy.hdf_input_n_table(self.link,hf,nnuc_tab,name)
             hf.close()
 
-            self.w_nnuc=nnuc_tab['w']
-            self.r_nnuc=nnuc_tab['r']
-            self.Rn_nnuc=nnuc_tab['Rn']
-            self.A_nnuc=nnuc_tab['A']
-            self.nb_nnuc=nnuc_tab['nb']
+            nt=nnuc_tab.get_nlines()
+            print('nt',nt)
+
+            self.w_nnuc=[nnuc_tab['w'] for i in range(0,nt)]
+            self.r_nnuc=[nnuc_tab['r'] for i in range(0,nt)]
+            self.Rn_nnuc=[nnuc_tab['Rn'] for i in range(0,nt)]
+            self.A_nnuc=[nnuc_tab['A'] for i in range(0,nt)]
+            self.nb_nnuc=[nnuc_tab['nb'] for i in range(0,nt)]
+            
+            #self.w_nnuc=self.w_nnuc[:nt]
+            #self.r_nnuc=self.r_nnuc[:nt]
+            #self.Rn_nnuc=self.Rn_nnuc[:nt]
+            #self.A_nnuc=self.A_nnuc[:nt]
+            #self.nb_nnuc=self.nb_nnuc[:nt]
             
             nb_nnuc_temp=[abs(self.r_nnuc[i]-10.8)
                           for i in range(0,len(self.r_nnuc))]
@@ -124,11 +133,15 @@ class load_crust:
             o2sclpy.hdf_input_n_table(self.link,hf,nnuc_tab_outer,name)
             hf.close()
             
-            self.w_nnuc_outer=nnuc_tab_outer['w']
-            self.r_nnuc_outer=nnuc_tab_outer['r']
-            self.Rn_nnuc_outer=nnuc_tab_outer['Rn']
-            self.A_nnuc_outer=nnuc_tab_outer['A']
-            self.nb_nnuc_outer=nnuc_tab_outer['nb']
+            nt=nnuc_tab_outer.get_nlines()
+            print('nt2',nt)
+            
+            self.w_nnuc_outer=[nnuc_tab_outer['w'][i] for i in range(0,nt)]
+            self.r_nnuc_outer=[nnuc_tab_outer['r'][i] for i in range(0,nt)]
+            self.Rn_nnuc_outer=[nnuc_tab_outer['Rn'][i] for i in range(0,nt)]
+            self.A_nnuc_outer=[nnuc_tab_outer['A'][i] for i in range(0,nt)]
+            self.nb_nnuc_outer=[nnuc_tab_outer['nb'][i] for i in range(0,nt)]
+            
             nb_nnuc_temp=[abs(self.r_nnuc_outer[i]-11.4)
                           for i in range(0,len(self.r_nnuc_outer))]
             self.rho_114=(self.nb_nnuc_outer[numpy.argmin(nb_nnuc_temp)]*

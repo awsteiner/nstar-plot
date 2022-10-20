@@ -50,9 +50,9 @@ class nstar_plot(load_crust):
     # Color for neutron drip
     neutron_color=(0.875,0.625,0.75)
     # Figure object
-    fig=0
+    #fig=0
     # Axis object
-    ax=0
+    #ax=0
     # Font scaling parameter (default 20)
     font_scale=20
 
@@ -63,6 +63,8 @@ class nstar_plot(load_crust):
     to (1,1) by plotting a couple small lines.
     """
     def init(self):
+        self.pb.fig_dict=('left_margin=0,right_margin=0,'+
+                          'top_margin=0,bottom_margin=0')
         self.pb.canvas()
         self.pb.xlimits(0,1)
         self.pb.ylimits(0,1)
@@ -70,19 +72,9 @@ class nstar_plot(load_crust):
         self.link=o2sclpy.linker()
         self.link.link_o2scl()
 
-        #(self.fig,self.ax)=o2sclpy.default_plot(0.0,0.0,0.0,0.0)
-        #plot.xlim([0,1])
-        #plot.ylim([0,1])
-        #plot.plot([0,0.01],[0,0.01],color=self.bkgd_color,ls='-')
-        #plot.plot([0.99,1.0],[0.99,1.0],color=self.bkgd_color,ls='-')
-
     # Form the base black background
     def bkgd(self):
         self.pb.rect(0,0,1,1,fc=self.bkgd_color)
-        # Black background
-        #main_bkgd=Rectangle((0,0),1,1)
-        #main_bkgd.set_facecolor(self.bkgd_color)
-        #self.ax.add_artist(main_bkgd)
 
     """
     The star's surface, red and yellow, created from a series of 
@@ -99,10 +91,8 @@ class nstar_plot(load_crust):
             size2=0.6-float(i)*0.56/N
             green=float(i)/N
             
-            self.pb.ellipse(centx,centy,size1,size2,angle=0,lw=0,fc=(1,green,0))
-            #base=Ellipse((centx,centy),size1,size2,lw=0,angle=ang)
-            #base.set_facecolor((1,green,0))
-            #self.ax.add_artist(base)
+            self.pb.ellipse(centx,centy,size1,size2,angle=0,
+                            lw=0,fc=(1,green,0))
             
     """
     Plot the magnetic field
@@ -114,7 +104,7 @@ class nstar_plot(load_crust):
     def mag_field(self,ord):
         mx=0.5
         my=-0.5
-        fact=400
+        fact=500
         N=10
         # vector field
         for i in range(0,N+1):
@@ -127,9 +117,9 @@ class nstar_plot(load_crust):
                     Bx=(3*rx*dot/rmag**5-mx/rmag**3)/fact
                     By=(3*ry*dot/rmag**5-my/rmag**3)/fact
 
-                    self.pb.arrow(rx+0.5+Bx,ry+0.5+By,-Bx,-By,
+                    self.pb.arrow(rx+0.5+Bx,ry+0.5+By,rx+0.5,ry+0.5,
                                   'head_width=0.01,head_length=0.03',
-                                  color='blue',zorder=ord)
+                                  color='blue',zorder=ord,lw=1)
                     #self.ax.arrow(rx+0.5+Bx,ry+0.5+By,-Bx,-By,
                     #head_width=0.01,head_length=0.03,color='blue',
                     #zorder=ord)
@@ -238,21 +228,22 @@ class nstar_plot(load_crust):
     """
     def rotation(self,ord):
         ang3=3*self.pi/4-0.1
-        self.pb.axes.arrow(0.5+0.2*cos(ang3),0.5+0.2*sin(ang3),
-                      0.15*cos(ang3),0.15*sin(ang3),
-                      head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
-                      zorder=ord)
-        self.pb.axes.arrow(0.5+0.3*cos(ang3+self.pi),
-                      0.5+0.3*sin(ang3+self.pi),
-                      0.07*cos(ang3+self.pi),
-                      0.07*sin(ang3+self.pi),
-                      head_width=0.01,head_length=0.03,color=(0.2,0.8,0.2),
-                      zorder=ord)
+        self.pb.arrow(0.5+0.2*cos(ang3),0.5+0.2*sin(ang3),
+                           0.15*cos(ang3),0.15*sin(ang3),
+                           'head_width=0.01,head_length=0.03',
+                           color=(0.2,0.8,0.2),zorder=ord)
+        self.pb.arrow(0.5+0.3*cos(ang3+self.pi),
+                           0.5+0.3*sin(ang3+self.pi),
+                           0.07*cos(ang3+self.pi),
+                           0.07*sin(ang3+self.pi),
+                           'head_width=0.01,head_length=0.03',
+                           color=(0.2,0.8,0.2),zorder=ord)
         self.pb.axes.text(0.30,0.84,
-                     r'$\mathrm{freq.}=4.2\times 10^{-5}-720~\mathrm{Hz}$',
-                     fontsize=self.font_scale,color=(0.2,0.8,0.2),va='center',
-                     ha='center',zorder=ord+1,
-                     bbox=dict(facecolor=self.bkgd_color,lw=0))
+                          r'$\mathrm{freq.}=4.2\times 10^{-5}-720~\mathrm{Hz}$',
+                          fontsize=self.font_scale,
+                          color=(0.2,0.8,0.2),va='center',
+                          ha='center',zorder=ord+1,
+                          bbox=dict(facecolor=self.bkgd_color,lw=0))
 
     """
     Axes for the cutaway
@@ -361,51 +352,53 @@ class nstar_plot(load_crust):
             self.pb.axes.add_artist(pasta2)
         # Labels
         self.pb.axes.text(0.05,0.12,'Outer',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                          color='black',rotation='90',va='center',
+                          ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.crust_color,lw=0))
         self.pb.axes.text(0.09,0.12,'Crust',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
-        self.pb.axes.text(0.21,0.12,'neutron drip',fontsize=self.font_scale*0.6,color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                          color='black',rotation='90',va='center',
+                          ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.crust_color,lw=0))
+        self.pb.axes.text(0.21,0.12,'neutron drip',
+                          fontsize=self.font_scale*0.6,color='black',
+                          rotation='90',va='center',ha='center',
+                          zorder=ord+2,
+                          bbox=dict(facecolor=self.crust_color,lw=0))
         self.pb.axes.text(0.25,0.12,'Inner',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.neutron_color,lw=0))
+                          color='black',rotation='90',va='center',
+                          ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.neutron_color,lw=0))
         self.pb.axes.text(0.29,0.12,'Crust',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.neutron_color,lw=0))
+                          color='black',rotation='90',va='center',
+                          ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.neutron_color,lw=0))
         self.pb.axes.text(0.38,0.12,'Pasta',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.core_color,lw=0))
+                          color='black',
+                          rotation='90',va='center',ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.core_color,lw=0))
         self.pb.axes.text(0.45,0.12,'Core',fontsize=self.font_scale*0.8,
-                     color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2)
+                          color='black',
+                          rotation='90',va='center',ha='center',zorder=ord+2)
         # Density labels
         self.pb.axes.text(0.08,0.24,'g/cm$^{3}$:',fontsize=self.font_scale*0.8,
-                     color='black',
-                     va='bottom',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                          color='black',
+                          va='bottom',ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.crust_color,lw=0))
         self.pb.axes.text(0.18,0.25,'$10^{11}$',fontsize=self.font_scale*0.8,
-                     color='black',
-                     va='bottom',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                          color='black',
+                          va='bottom',ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.crust_color,lw=0))
         self.pb.axes.text(0.39,0.25,'$10^{14}$',fontsize=self.font_scale*0.8,
-                     color='black',
-                     va='bottom',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.core_color,lw=0))
+                          color='black',
+                          va='bottom',ha='center',zorder=ord+2,
+                          bbox=dict(facecolor=self.core_color,lw=0))
         # Crust thickness label
         self.pb.axes.text(0.26,0.335,
-                     '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
-                     fontsize=self.font_scale*0.8,color=self.text_color,
-                     va='center',ha='center',zorder=13,
-                     bbox=dict(facecolor=self.bkgd_color,lw=0))
-
+                          '$R_{\mathrm{crust}}=0.4-2.0~\mathrm{km}$',
+                          fontsize=self.font_scale*0.8,color=self.text_color,
+                          va='center',ha='center',zorder=13,
+                          bbox=dict(facecolor=self.bkgd_color,lw=0))
+        
     """
     Generic function to reformat a float as a latex string
     """
@@ -432,14 +425,15 @@ class nstar_plot(load_crust):
         self.load()
             
         # Set up inner crust axes
-        ax_ic=self.fig.add_axes([0.28,0.01,0.24,0.3],
-                                facecolor=(1.0,0.5,0.5))
+        ax_ic=self.pb.fig.add_axes([0.28,0.01,0.24,0.3],
+                                   facecolor=(1.0,0.5,0.5))
         ax_ic.minorticks_on()
         ax_ic.tick_params('both',length=12,width=1,which='major')
         ax_ic.tick_params('both',length=5,width=1,which='minor')
         ax_ic.set_yticks([])
         ax_ic.set_xticks([10.8,10.9,11.0,11.1,11.2,11.3])
         ax_ic.set_xticklabels(['','','','','',''])
+        print('here',self.r_nnuc)
         ax_ic.set_xlim([numpy.max(self.r_nnuc),numpy.min(self.r_nnuc)])
         ax_ic.set_ylim([0,1])
         
@@ -458,12 +452,11 @@ class nstar_plot(load_crust):
         
         # Plot inner crust
         ax_ic.plot(self.r_nn,self.w_nn,marker='o',lw=0,mfc=(0.9,0.9,1.0),
-          mec=(0.9,0.9,1.0),mew=0.0,ms=2.0)
+                   mec=(0.9,0.9,1.0),mew=0.0,ms=2.0)
         for i in range(0,len(self.r_nnuc)):
-            ax_ic.plot(self.r_nnuc[i],self.w_nnuc[i],
-                  marker='.',lw=0,mfc=(0.75,0.75,1.0),
-                      mec=(0.75,0.75,1.0),
-                  ms=self.Rn_nnuc[i])
+            ax_ic.plot([self.r_nnuc[i]],[self.w_nnuc[i]],
+                       marker='.',lw=0,mfc=(0.75,0.75,1.0),
+                       mec=(0.75,0.75,1.0),ms=self.Rn_nnuc[i])
 
         ax_ic.text(10.9,0.2,'10.9',fontsize=self.font_scale*0.6,
           va='center',ha='center') 
@@ -497,17 +490,18 @@ class nstar_plot(load_crust):
           va='top',ha='center',rotation=90)
         
         # Inner crust labels
-        ax_ic.text(10.84,0.4,'pasta',fontsize=self.font_scale*0.6,color='black',
-                     rotation='90',va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+        ax_ic.text(10.84,0.4,'pasta',fontsize=self.font_scale*0.6,
+                   color='black',rotation=90,va='center',
+                   ha='center',zorder=ord+2,
+                   bbox=dict(facecolor=self.crust_color,lw=0))
         ax_ic.text(11.08,0.35,'inner crust',
                    fontsize=self.font_scale*0.6,color='black',
-                     va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                   va='center',ha='center',zorder=ord+2,
+                   bbox=dict(facecolor=self.crust_color,lw=0))
 
         # Set up outer crust axes
-        ax_oc=self.fig.add_axes([0.01,0.01,0.24,0.3],
-                                facecolor=(1.0,0.5,0.5))
+        ax_oc=self.pb.fig.add_axes([0.01,0.01,0.24,0.3],
+                                   facecolor=(1.0,0.5,0.5))
         ax_oc.minorticks_on()
         ax_oc.tick_params('both',length=12,width=1,which='major')
         ax_oc.tick_params('both',length=5,width=1,which='minor')
@@ -556,8 +550,8 @@ class nstar_plot(load_crust):
         # Outer crust labels
         plot.text(11.52,0.33,r'$\Leftarrow$ outer crust',
                   fontsize=self.font_scale*0.6,color='black',
-                     va='center',ha='center',zorder=ord+2,
-                     bbox=dict(facecolor=self.crust_color,lw=0))
+                  va='center',ha='center',zorder=ord+2,
+                  bbox=dict(facecolor=self.crust_color,lw=0))
         
         ax_oc.text(11.35,0.5,'neutron drip',fontsize=self.font_scale*0.6,
                    color='black',
@@ -630,7 +624,7 @@ class nstar_plot(load_crust):
         self.cutaway(0.5,self.inner_color,8)
         self.cutaway_axes(9)
         self.cut_labels(9)
-        self.crust_box2(10)
+        #self.crust_box2(10)
         self.mass_limits(13)
         self.title(15)
 

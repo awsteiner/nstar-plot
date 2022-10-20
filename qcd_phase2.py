@@ -3,7 +3,7 @@ import o2sclpy
 import numpy
 import math
 
-p=o2sclpy.plotter()
+p=o2sclpy.plot_base()
 p.fig_dict='fig_size_x=9.7,fig_size_y=6,left_margin=0.12,bottom_margin=0.16'
 p.xlimits(0,2000)
 p.ylimits(0,160)
