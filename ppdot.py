@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------
 
-Copyright (C) 2019-2020, Andrew W. Steiner
+Copyright (C) 2019-2024, Andrew W. Steiner
 
 This neutron star plot is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License
@@ -29,12 +29,17 @@ along with this neutron star plot. If not, see
 import math
 import matplotlib.pyplot as plot
 import o2sclpy
-
-# For rectangles
 import matplotlib.patches as patches
 
 # Gauss in fm^{-2}
 gauss_fm2=math.sqrt(3.16303e-36)
+
+xlo=1.0e-3
+xhi=30.0
+ylo=1.0e-22
+yhi=1.0e-8
+
+final_dpi=250
 
 rrats=[dict()]
 index=0
@@ -149,26 +154,22 @@ xdins=[
     ['J0726.0-2612',3.44,29.3]
 ]
 
-xlo=1.0e-3
-xhi=30.0
-ylo=1.0e-22
-yhi=1.0e-8
+#xdins=[]
 
-xdins=[
-    
-    ]
+plot.rcParams['figure.dpi']=final_dpi
 
-o2=o2sclpy.plotter()
+o2=o2sclpy.plot_base()
 
-(fig,ax)=o2sclpy.default_plot(left_margin=0.14,bottom_margin=0.11,
-                              right_margin=0.01,
-                              top_margin=0.02,rt_ticks=True,ticks_in=True)
+(fig,ax)=o2sclpy.default_plot(left_margin=0.16,bottom_margin=0.11,
+                              right_margin=0.01,top_margin=0.02,
+                              rt_ticks=True,ticks_in=True)
+                              
 ax.set_xscale('log')
 ax.set_yscale('log')
 plot.xlim([xlo,xhi])
 plot.ylim([ylo,yhi])
-plot.xlabel('$$ P~(\mathrm{s}) $$',fontsize=16)
-plot.ylabel('$$ \dot{P} $$',fontsize=16)
+plot.xlabel('$$ P~(\\mathrm{s}) $$',fontsize=16)
+plot.ylabel('$$ \\dot{P} $$',fontsize=16)
 
 x=[]
 y=[]
@@ -221,16 +222,16 @@ for logB in range(8,16):
                              (10.0**logB/3.3e19)**2.0/xright],ls=':',
               color='black')
     if logB>8 and logB<13:
-        ax.text(2.1e-3,yleft*0.78,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+        ax.text(2.1e-3,yleft*0.78,'$$ 10^{'+str(logB)+'}~\\mathrm{G} $$',
                 fontsize=12)
     elif logB==13:
-        ax.text(2.1e-3,yleft*0.78,'$$ B=10^{'+str(logB)+'}~\mathrm{G} $$',
+        ax.text(2.1e-3,yleft*0.78,'$$ B=10^{'+str(logB)+'}~\\mathrm{G} $$',
                 fontsize=12)
     elif logB==14:
-        ax.text(1.5e-2,1.0e-9,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+        ax.text(1.5e-2,1.0e-9,'$$ 10^{'+str(logB)+'}~\\mathrm{G} $$',
                 fontsize=12)
     elif logB==15:
-        ax.text(1.05,1.0e-9,'$$ 10^{'+str(logB)+'}~\mathrm{G} $$',
+        ax.text(1.05,1.0e-9,'$$ 10^{'+str(logB)+'}~\\mathrm{G} $$',
                 fontsize=12)
 
 for log_tau in range(2,12):
@@ -251,14 +252,15 @@ for log_tau in range(2,12):
                 fontsize=12,color='blue')
     elif log_tau>2:
         ax.text(text_x*0.85,yright*1.0,
-                '$$ 10^{'+str(log_tau)+'}~\mathrm{yr} $$',
+                '$$ 10^{'+str(log_tau)+'}~\\mathrm{yr} $$',
                 fontsize=12,color='blue')
 
 plot.plot([xlo,xhi*0.4],[10**(2.0*(-3.0)-16.52),
                          10**(2.0*math.log10(xhi*0.4)-16.52)],color='green')
 
 # Legend
-r=patches.Rectangle((0.2,2.0e-22),20.0,4.0e-19,0,lw=0,fc='white',fill=True,
+r=patches.Rectangle((0.2,2.0e-22),20.0,4.0e-19,
+                    angle=0,lw=0,fc='white',fill=True,
                     zorder=20)
 ax.add_patch(r)
 
@@ -267,27 +269,27 @@ fact=5.0
 
 plot.plot([0.3],[top],marker='s',mfc='red',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
-        '$$ \mathrm{Magnetars} $$',
+        '$$ \\mathrm{Magnetars} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
 
 top=top/fact
 
 plot.plot([0.3],[top],marker='*',mfc='blue',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
-        '$$ \mathrm{RRATs} $$',
+        '$$ \\mathrm{RRATs} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
 
 fact2=15.0
 plot.plot([0.3*fact2],[top],marker='v',mfc='green',mew=0,lw=0,zorder=21)
 ax.text(0.4*fact2,top,
-        '$$ \mathrm{XDINs} $$',
+        '$$ \\mathrm{XDINs} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
 
 top=top/fact
 
 plot.plot([0.3],[top],marker='.',mfc='black',mew=0,lw=0,zorder=21)
 ax.text(0.4,top,
-        '$$ \mathrm{Pulsars} $$',
+        '$$ \\mathrm{Pulsars} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
 
 top=top/fact
@@ -295,7 +297,7 @@ top=top/fact
 plot.plot([0.3],[top],marker='o',mec='black',mew=1,lw=0,zorder=21,
           mfc='white')
 ax.text(0.4,top,
-        '$$ \mathrm{Pulsars (binaries)} $$',
+        '$$ \\mathrm{Pulsars (binaries)} $$',
         fontsize=16,color='black',ha='left',va='center',zorder=21)
 
 plot.savefig('ppdot.pdf')        
