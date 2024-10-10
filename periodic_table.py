@@ -1,36 +1,47 @@
 """
--------------------------------------------------------------------
+   -------------------------------------------------------------------
 
-Copyright (C) 2015-2020, Andrew W. Steiner
+   Copyright (C) 2015-2024, Andrew W. Steiner
 
-This periodic table plot is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 3 of
-the License, or (at your option) any later version.
-
-This periodic table plot is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this periodic table plot. If not, see
-<http://www.gnu.org/licenses/>.
-
--------------------------------------------------------------------
+   This periodic table plot is free software; you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 3 of the
+   License, or (at your option) any later version.
+   
+   This periodic table plot is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this periodic table plot. If not, see
+   <http://www.gnu.org/licenses/>.
+   
+   -------------------------------------------------------------------
+   
+   Note that the matplotlib output is a bit different on OSX and
+   Ubuntu.
 
 """
+
+# Imports
 import numpy as np
 import matplotlib.pyplot as plot
 import matplotlib.patches as patches
-
-nsynth_mode=True
+import os
 
 # ----------------------------------------------------------------
-# Note that the matplotlib output is significantly different on
-# OSX and Ubuntu, and this code is currently designed to run on
-# OSX.
+# Options 
 
+# If true, then output a nucleosynthesis table. If false, output a
+# standard periodic table. As of 10/10/24, the nsynth_mode=False
+# version still needed a bit of work. 
+nsynth_mode=True
+
+# Use 250 for higher dpi monitors and 100 for the default
+final_dpi=250
+
+# RGB color definitions
 unstable_color=(0.9,0.9,0.9)
 BBN_color=(0.9,1.0,0.9)
 cosmic_ray_color=(1.0,0.9,0.9)
@@ -40,10 +51,18 @@ WD_color=(0.8,1.0,0.8)
 r_proc_color=(1.0,1.0,0.9)
 s_proc_color=(1.0,0.9,1.0)
 
+# If true, report errors as +/- 0.00001 instead of (1)
+long_errors=False
+
+debug=False
+
 # ----------------------------------------------------------------
-# box
 
 def box(x,y,Z,abbrev,name,mass,ax,af,lf):
+    """Create a box for the specified element with atomic number
+    ``Z`` at location ``(x,y)``, using the nucleosynthetic fractions
+    specified in ``af``.
+    """
     #fill_color=(1.0-x/40,0.5+x/40,1.0)
     fill_color=(1.0,1.0,1.0)
     if nsynth_mode:
@@ -95,14 +114,20 @@ def box(x,y,Z,abbrev,name,mass,ax,af,lf):
         ax.add_patch(p)
     poutline=patches.Rectangle((x-0.5,y-0.5),1,1,fill=False,lw=0.5)
     ax.add_patch(poutline)
+
+    # Output atomic number
     if int(Z)>99:
         ax.text(x-0.23,y+0.35,Z,ha='center',va='center',
                 fontsize=7)
     else:
         ax.text(x-0.30,y+0.35,Z,ha='center',va='center',
                 fontsize=7)
+
+    # Output element abbreviation
     ax.text(x,y+0.08,abbrev,ha='center',va='center',
             fontsize=15)
+    
+    # Output element name
     if len(name)>10 or name=='Molybdenum':
         ax.text(x,y-0.2,name,ha='center',va='center',
                 fontsize=4)
@@ -112,6 +137,7 @@ def box(x,y,Z,abbrev,name,mass,ax,af,lf):
     else:
         ax.text(x,y-0.2,name,ha='center',va='center',
                 fontsize=6)
+        
     if nsynth_mode==True:
         if abbrev=='H':
             ax.text(x,y-0.4,'12',ha='center',va='center',
@@ -119,7 +145,7 @@ def box(x,y,Z,abbrev,name,mass,ax,af,lf):
         else:
             for i in range(0,83):
                 if lf[i][0]==abbrev:
-                    abund=r'$ '+lf[i][1]+'{\pm}'+lf[i][2]+' $'
+                    abund=r'$ '+lf[i][1]+'{\\pm}'+lf[i][2]+' $'
                     if len(abund)>17:
                         ax.text(x,y-0.4,abund,ha='center',va='center',
                                 fontsize=3)
@@ -138,14 +164,6 @@ def box(x,y,Z,abbrev,name,mass,ax,af,lf):
                     fontsize=7)
     
 # ----------------------------------------------------------------
-# Options 
-
-# If true, report errors as +/- 0.00001 instead of (1)
-long_errors=False
-
-debug=True
-
-# ----------------------------------------------------------------
 # Read data
 
 df=np.genfromtxt('ciaaw_edit.txt',dtype='str')
@@ -153,7 +171,7 @@ af=np.genfromtxt('abund2.txt',dtype='str')
 lf=np.genfromtxt('lodders03b.txt',dtype='str')
 
 # ----------------------------------------------------------------
-# Initial parse 
+# Parse the 'ciaaw_edit.txt' file for atomic weights
 
 Z_arr=[]
 name_arr=[]
@@ -193,32 +211,32 @@ for i in range(0,len(df)):
         wgt_arr.append('['+df[i][7]+']')
     elif note=='g':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^g$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^g$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='gr':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^{gr}$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^{gr}$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='gm':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^{gm}$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^{gm}$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='m':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^{m}$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^{m}$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='r':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^r$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^r$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='s':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8]+'$^s$')
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8]+'$^s$')
         else:
             wgt_arr.append(df[i][7])
     elif note=='b':
@@ -231,7 +249,6 @@ for i in range(0,len(df)):
                 diff*=10.0
             digit=str(diff)[0]
             wgt_arr.append(str(avg)+'('+digit+')')
-        print('Here2')
     elif note=='bm':
         if long_errors:
             wgt_arr.append('['+df[i][7]+','+df[i][8]+']$^m$')
@@ -244,7 +261,7 @@ for i in range(0,len(df)):
             wgt_arr.append(str(avg)+'('+digit+')$^m$')
     elif note=='n':
         if df[i][8][0]!='(' and float(df[i][8])>0.0:
-            wgt_arr.append(df[i][7]+' $ \pm $ '+df[i][8])
+            wgt_arr.append(df[i][7]+' $ \\pm $ '+df[i][8])
         else:
             wgt_arr.append(df[i][7])
     if debug:
@@ -252,7 +269,7 @@ for i in range(0,len(df)):
         print('')
 
 # ----------------------------------------------------------------
-# Determine coordinates
+# Determine (x,y) coordinates from atomic number
 
 px_cent=[Z_arr[i] for i in range(0,len(Z_arr))]
 py_cent=[Z_arr[i] for i in range(0,len(Z_arr))]
@@ -307,15 +324,17 @@ for i in range(0,len(name_arr)):
     print('%15s %3i %20s %4s %4s'%(name_arr[i],Z_arr[i],wgt_arr[i],
                                    str(px_cent[i]),str(py_cent[i])))
 
+# ------------------------------------------------------------------
+# Construct figure and axes objects
+
 plot.rc('text',usetex=True)
 #plot.rc('font',family='serif')
 plot.rcParams['lines.linewidth']=0.5
 
-# ------------------------------------------------------------------
-
 # 8x6 is the same as 10x7.5 and thus is perfect for 8.5 x 11 paper
 # with 1/2 inch margins on all four sides
-fig=plot.figure(1,figsize=(8.0,6.0))
+
+fig=plot.figure(1,figsize=(8.0,6.0),dpi=final_dpi)
 
 fig.set_facecolor('white')
 ax=plot.axes([0.04,0.04,0.92,0.92])
@@ -328,12 +347,21 @@ plot.xlim([0,19])
 plot.ylim([0,10.5])
 plot.axis('off')
 
+# ------------------------------------------------------------------
+# Plot all of the individual element boxes
+
 for i in range(0,len(name_arr)):
     box(px_cent[i],py_cent[i],str(Z_arr[i]),abbrev_arr[i],name_arr[i],
         wgt_arr[i],ax,af,lf)
 
+# ------------------------------------------------------------------
+# Title
+
 ax.text(2,10.5,'Origin of the Elements',
         ha='left',va='center',fontsize=20)
+
+# ------------------------------------------------------------------
+# Column and other labels
 
 if nsynth_mode==False:
     group_color=(0.4,0.4,0.4)
@@ -375,31 +403,39 @@ if nsynth_mode==False:
                    'central value and error'),
             ha='left',va='center',fontsize=7)
 
+# ----------------------------------------------------------------
+# Create the notes at the top
+
 notes_x=2.8
-ax.text(notes_x,9.7,('The bottom number gives the $\mathrm{log}_{10} $ '+
-               'of the solar system abundance shifted to 12 for H '+
-               '(Lodders 2003).'),
+ax.text(notes_x,9.7,(r'The bottom number gives the $\mathrm{log}_{10} $ '+
+                     'of the solar system abundance shifted to 12 for H '+
+                     '(Lodders 2003).'),
         ha='left',va='center',fontsize=7)
-ax.text(notes_x,9.5,'r-process to s-process ratios are from Simmerer et al. (2004)',
+ax.text(notes_x,9.5,('r-process to s-process ratios are from '+
+                     'Simmerer et al. (2004)'),
         ha='left',va='center',fontsize=7)
-ax.text(notes_x,9.3,('Inspired by previous versions from Jennifer Johnson, '+
-               'Inese Ivans, and Anna Frebel'),
+ax.text(notes_x,9.3,('Inspired by previous versions from Jennifer '+
+                     'Johnson, Inese Ivans, and Anna Frebel'),
         ha='left',va='center',fontsize=7)
-ax.text(notes_x+0.2,9.1,('(see http://blog.sdss.org/2017/01/09/origin-of-'+
-                 'the-elements-in-the-solar-system/ '),
+ax.text(notes_x+0.2,9.1,('(see http://blog.sdss.org/2017/01/09/origin'+
+                         '-of-the-elements-in-the-solar-system/ '),
         ha='left',va='center',fontsize=7)
 ax.text(notes_x+0.2,8.9,('and http://www.cosmic-origins.org/ ).'),
         ha='left',va='center',fontsize=7)
 ax.text(notes_x,8.7,'This version by Andrew W. Steiner, awsteiner@utk.edu,',
         ha='left',va='center',fontsize=7)
-ax.text(notes_x+0.2,8.5,('python code (GPLv3) at https://github.com/awsteiner/'+
-               'nstar-plot/periodic\_table.py'),
+ax.text(notes_x+0.2,8.5,(r'python code (GPLv3) at https://github.com/'+
+                         r'awsteiner/nstar-plot/periodic\_table.py'),
         ha='left',va='center',fontsize=7)
 ax.text(notes_x,8.3,('There are significant uncertainties in some values '+
                      'that are not shown here.'),
         ha='left',va='center',fontsize=7)
-ax.text(notes_x,8.1,('The origin of some elements is strongly isotope-dependent.'),
+ax.text(notes_x,8.1,('The origin of some elements is strongly '+
+                     'isotope-dependent.'),
         ha='left',va='center',fontsize=7)
+
+# ----------------------------------------------------------------
+# Construct the legend at the bottom
 
 ns_legend_x=[1,3.5,6,8.5,11,13.5,16,18.5]
 ns_legend_color=[BBN_color,cosmic_ray_color,Star_color,SNe_color,WD_color,
@@ -416,10 +452,16 @@ for i in range(0,7):
     ax.add_patch(leg1b)
     ax.text(ns_legend_x[i]+0.5,0.225,ns_legend_text[i],
             ha='left',va='center',fontsize=7)
-
+    
+print('Generating pdf.')
 plot.savefig('periodic_table.pdf')
-import os
+
+# AWS, 10/10/24: I have previously found it better to generate the
+# .png using Imagemagick rather than trying to save it directly to PNG
+# using matplotlib.
+print('Coverting pdf to png (takes a few minutes).')    
 os.system('convert -density 300 periodic_table.pdf periodic_table.png')
+
 plot.show()
     
 
