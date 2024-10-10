@@ -1,23 +1,22 @@
-"""
--------------------------------------------------------------------
+"""-------------------------------------------------------------------
 
-Copyright (C) 2015-2020, Andrew W. Steiner
+   Copyright (C) 2015-2024, Andrew W. Steiner
 
-This neutron star plot is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 3 of
-the License, or (at your option) any later version.
+   This neutron star plot is free software; you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 3 of
+   the License, or (at your option) any later version.
+   
+   This neutron star plot is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this neutron star plot. If not, see
+   <http://www.gnu.org/licenses/>.
 
-This neutron star plot is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this neutron star plot. If not, see
-<http://www.gnu.org/licenses/>.
-
--------------------------------------------------------------------
+   -------------------------------------------------------------------
 
 """
 
@@ -35,13 +34,16 @@ class eos_mvsr_plot:
     # Main run()
     def run(self):
 
+        pb=o2sclpy.plot_base()
+        pb.fig_dict='fig_size_x=10,fig_size_y=6,dpi=250'
+        
         pb.xlimits(0,1)
         pb.ylimits(0,1)
 
         self.link=o2sclpy.linker()
         self.link.link_o2scl()
 
-        pb.subplots(2,1)
+        pb.subplots(1,2)
         pb.fig.subplots_adjust(wspace=0.27,left=0.10,right=0.98,
                                bottom=0.15,top=0.97)
 
@@ -57,12 +59,18 @@ class eos_mvsr_plot:
         ax2.tick_params(labelsize=20)
         pb.fig.set_facecolor('white')
 
-        hf=o2sclpy.hdf_file(self.link)
+        hf=o2sclpy.hdf_file()
         hf.open('eos_mvsr.o2')
-        name=o2sclpy.std_string(self.link)
+        name=o2sclpy.std_string()
+        
         name.init_bytes(b'eos')
-        tab=o2sclpy.table(self.link)
-        o2sclpy.hdf_input_n_table(self.link,hf,nn_tab,name)
+        tab=o2sclpy.table()
+        o2sclpy.hdf_input_n_table(hf,tab,name)
+        
+        tab2=o2sclpy.table()
+        name.init_bytes(b'mvsr')
+        o2sclpy.hdf_input_n_table(hf,tab2,name)
+        
         hf.close()
         
         # Convert to MeV/fm^3
@@ -74,21 +82,21 @@ class eos_mvsr_plot:
         ax1.set_xlim([0,1600])
         ax1.semilogy(ed2,pr2,lw=2)
         ax1.text(0.5,-0.12,
-                      r'$\varepsilon~(\mathrm{MeV}/\mathrm{fm}^3)$',
-                      fontsize=24,va='center',ha='center',
-                      transform=ax1.transAxes)
+                 r'$\varepsilon~(\mathrm{MeV}/\mathrm{fm}^3)$',
+                 fontsize=24,va='center',ha='center',
+                 transform=ax1.transAxes)
         ax1.text(-0.2,0.5,
-                      r'$P~(\mathrm{MeV}/\mathrm{fm}^3)$',
-                      fontsize=24,va='center',ha='center',
-                      transform=ax1.transAxes,rotation=90)
-        dset=h5r.h5read_type_named('eos_mvsr.o2','table','mvsr')
+                 r'$P~(\mathrm{MeV}/\mathrm{fm}^3)$',
+                 fontsize=24,va='center',ha='center',
+                 transform=ax1.transAxes,rotation=90)
+        
         ax2.set_ylim([0.0,2.1])
         ax2.set_xlim([8,24])
-        ax2.plot(tab['r'],tab['gm'],lw=2)
-        ax2.text(0.5,-0.12,'$R~(\mathrm{km})$',
+        ax2.plot(tab2['r'],tab2['gm'],lw=2)
+        ax2.text(0.5,-0.12,'$R~(\\mathrm{km})$',
                       fontsize=24,va='center',ha='center',
                       transform=ax2.transAxes)
-        ax2.text(-0.2,0.6,'$M~(\mathrm{M}_{\odot})$',
+        ax2.text(-0.2,0.6,'$M~(\\mathrm{M}_{\\odot})$',
                       fontsize=24,va='center',ha='center',
                       transform=ax2.transAxes,rotation=90)
         #

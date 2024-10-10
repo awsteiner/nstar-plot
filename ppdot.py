@@ -1,31 +1,33 @@
+"""-------------------------------------------------------------------
+
+   Copyright (C) 2019-2024, Andrew W. Steiner
+
+   This neutron star plot is free software; you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 3 of
+   the License, or (at your option) any later version.
+   
+   This neutron star plot is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this neutron star plot. If not, see
+   <http://www.gnu.org/licenses/>.
+   
+   -------------------------------------------------------------------
+
+Death line from Zhang et al. APJL 631 (2000) 138
+Pulsars from ATNF database
+Magnetars from McGill
+RRATs from WVU
+Comparable p pdot diagram in Zhou et al. (2017) 1708.05494
+
+XDINS From Rigoselli et al. (2019), ignoring J1605.3+3249 which doesn't
+  have P and Pdot data
+
 """
--------------------------------------------------------------------
-
-Copyright (C) 2019-2024, Andrew W. Steiner
-
-This neutron star plot is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 3 of
-the License, or (at your option) any later version.
-
-This neutron star plot is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this neutron star plot. If not, see
-<http://www.gnu.org/licenses/>.
-
--------------------------------------------------------------------
-
-"""
-# Death line from Zhang et al. APJL 631 (2000) 138
-# Pulsars from ATNF database
-# Magnetars from McGill
-# RRATs from WVU
-# Comparable p pdot diagram in Zhou et al. (2017) 1708.05494
-#
 import math
 import matplotlib.pyplot as plot
 import o2sclpy
@@ -34,11 +36,13 @@ import matplotlib.patches as patches
 # Gauss in fm^{-2}
 gauss_fm2=math.sqrt(3.16303e-36)
 
+# x- and y-axis limits
 xlo=1.0e-3
 xhi=30.0
 ylo=1.0e-22
 yhi=1.0e-8
 
+# Use 250 for higher dpi monitors and 100 for the default
 final_dpi=250
 
 rrats=[dict()]
@@ -153,8 +157,6 @@ xdins=[
     ['J2143.0+0654',9.43,4.1],
     ['J0726.0-2612',3.44,29.3]
 ]
-
-#xdins=[]
 
 plot.rcParams['figure.dpi']=final_dpi
 
