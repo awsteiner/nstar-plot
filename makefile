@@ -1,10 +1,22 @@
-FLAGS = -std=c++0x -ggdb -O3 -DO2SCL_READLINE \
-	-I$(O2SCL_INC) -I$(GSL_INC) -I$(HDF5_INC) -I$(BOOST_INC) \
-	-I$(EIGEN_INC) 
 
-LIB = -L$(O2SCL_LIB) -L$(GSL_LIB) -L$(HDF5_LIB) -lo2scl_eos \
-	-lo2scl_part -lo2scl_hdf -lo2scl -lhdf5 \
-	-lgsl -lgslcblas -lreadline -lncurses
+#----------------------------------------------------------------------
+
+ifdef UTKNA_MAKEFILE
+
+include $(UTKNA_MAKEFILE)
+
+# UTK configuration
+LIBS = $(UTKNA_O2SCL_LIBS) 
+LCXX = $(UTKNA_CXX) 
+LCFLAGS = $(UTKNA_O2SCL_INCS) $(UTKNA_CFLAGS)
+
+# UTK configuration
+MPI_LIBS = $(UTKNA_O2SCL_LIBS) 
+MPI_LCXX = $(UTKNA_MPI_CXX) 
+MPI_LCFLAGS = $(UTKNA_O2SCL_INCS) $(UTKNA_CFLAGS) $(UTKNA_MPI_CFLAGS) \
+	$(UTKNA_OPENMP_FLAGS)
+
+endif
 
 #----------------------------------------------------------------------
 
@@ -43,10 +55,10 @@ lead_nuc: lead_nuc.o
 	$(CXX) $(FLAGS) -o lead_nuc lead_nuc.o $(LIB)
 
 eos_mvsr.o: eos_mvsr.cpp
-	$(CXX) $(FLAGS) -o eos_mvsr.o -c eos_mvsr.cpp
+	$(LCXX) $(LCFLAGS) -o eos_mvsr.o -c eos_mvsr.cpp
 
 eos_mvsr: eos_mvsr.o
-	$(CXX) $(FLAGS) -o eos_mvsr eos_mvsr.o $(LIB)
+	$(LCXX) $(LCFLAGS) -o eos_mvsr eos_mvsr.o $(LIBS)
 
 qcd_phase.png: empty
 	o2graph -set font 24 \
