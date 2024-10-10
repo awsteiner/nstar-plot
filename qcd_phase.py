@@ -4,7 +4,8 @@ import numpy
 import math
 
 p=o2sclpy.plot_base()
-p.fig_dict='fig_size_x=9.7,fig_size_y=6,left_margin=0.12,bottom_margin=0.16'
+p.fig_dict=('dpi=250,fig_size_x=9.7,fig_size_y=6,'+
+            'left_margin=0.12,bottom_margin=0.16')
 p.xlimits(0,2000)
 p.ylimits(0,160)
 p.font=28
@@ -13,6 +14,13 @@ p.ytitle(r'$ T~[\mathrm{MeV}]$')
 
 nk=30
 
+dt_col1=[1,1,1]
+dt_col2=[17.4/29.0,17.4/29.0,1]
+
+mg_col1=[1,1,1]
+mg_col2=[1,0,0]
+
+# Deconfinement transition region
 for k in range(0,nk):
     xmin=1100+k*300/(nk-1)
     xmax=2600-k*600/(nk-1)
@@ -37,9 +45,11 @@ for k in range(0,nk):
     fill_region_x.append(transition_x1[0])
     fill_region_y.append(transition_y1[0])
 
-    color=[(nk-1-k/2.5)/(nk-1),(nk-1-k/2.5)/(nk-1),1.0]
+    color=[dt_col1[i]+(dt_col2[i]-dt_col1[i])*float(k)/float(nk-1)
+           for i in range(0,3)]
     p.axes.fill(fill_region_x,fill_region_y,color=color,alpha=0.4)
 
+# Merger region
 for k in range(0,nk):
     merger_x1=[i*100 for i in range(0,21)]
     merger_x2=[i*100 for i in range(0,21)]
@@ -59,7 +69,8 @@ for k in range(0,nk):
     fill_region_x.append(merger_x1[0])
     fill_region_y.append(merger_y1[0])
 
-    color=[1,(nk-1-k)/(nk-1),(nk-1-k)/(nk-1)]
+    color=[mg_col1[i]+(mg_col2[i]-mg_col1[i])*float(k)/float(nk-1)
+           for i in range(0,3)]
     p.axes.fill(fill_region_x,fill_region_y,color=color,alpha=0.03)
     
 p.text(500,80,'hadrons')
@@ -77,6 +88,7 @@ p.font=22
 p.text(180,150,'crossover')
 p.line(350,143,0,143,lw=2,color=[0.5,0.5,0.5],ls=':')
 
-p.save('qcd_phase2.png')
+p.save('qcd_phase.png')
+p.save('qcd_phase.pdf')
 p.show()
 

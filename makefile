@@ -60,47 +60,4 @@ eos_mvsr.o: eos_mvsr.cpp
 eos_mvsr: eos_mvsr.o
 	$(LCXX) $(LCFLAGS) -o eos_mvsr eos_mvsr.o $(LIBS)
 
-qcd_phase.png: empty
-	o2graph -set font 24 \
-                -set fig_dict "fig_size_x=8,fig_size_y=6,left_margin=0.12" \
-                -set xlo 0 -set xhi 10 -set ylo 0 -set yhi 200 \
-                -rect 0 0 2 100 0 "color=(0.9,0.9,0.9)" \
-                -text 0.5 52 "Hadrons" "rotation=90,va=center,ha=center" \
-                -rect 1.0 0 8 120 0 "color=(0.9,0.8,0.8)" \
-                -text 6.5 100 "Neutron star" "ha=center,va=center,color=red" \
-                -text 6.5 90 "mergers" "ha=center,va=center,color=red" \
-                -rect 0.0 0 8 5 0 "color=(0.8,0.9,0.8)" \
-                -text 4.0 12 "Neutron stars" "ha=center,va=center,color=green" \
-                -xtitle "$$ n_B/n_0 $$" \
-                -ytitle "$$ T~(\mathrm{MeV}) $$" \
-                -create table T func:17:i \
-                -function "0.7-T*T*0.0005" nc \
-                -plot nc T "color=black,lw=2" \
-                -point "0.7-16*16*0.0005" 16 \
-                "marker=o,mfc=black,mec=black,ms=4" \
-                -text 0.2 22 "Liquid-gas" \
-                "ha=left,va=center,fontsize=20" \
-                -text 0.8 12 "PT" \
-                "ha=left,va=center,fontsize=20" \
-                -create table T func:141:i \
-                -function "2-T*T*T/2000000" pt1 \
-                -function "6-T*T*T*3.9/2000000" pt2 \
-                -plot pt1 T "color=indigo,ls=--,lw=2" \
-                -plot pt2 T "color=indigo,ls=--,lw=2" \
-                -text 6 170 "Strongly-interacting quarks and gluons" \
-                "va=center,ha=center" \
-                -rect 0 75 2 200 0 "color=(0.8,0.8,0.9)" \
-                -text 0.3 140 "Rel. Heavy-Ion Coll." \
-                "ha=center,va=center,rotation=90,color=blue" \
-                -point 0.6 140 "marker=o,mfc=blue,mec=blue,ms=4" \
-                -text 0.7 145 "Critical point" \
-                "fontsize=20,ha=left,va=center" \
-                -arrow 4.1 50 1.9 50 \
-                "arrowstyle=fancy,fc=indigo,ec=indigo,lw=2,head_width=1.0" \
-                -arrow 3.9 50 9.8 50 \
-                "arrowstyle=fancy,fc=indigo,ec=indigo,lw=2,head_width=1.0" \
-                -text 6.0 60 "Variation of deconfinement transition" \
-                "color=indigo" \
-                -save "qcd_phase.png" -show
-
 empty:
