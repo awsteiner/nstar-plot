@@ -54,6 +54,12 @@ lead_nuc.o: lead_nuc.cpp
 lead_nuc: lead_nuc.o
 	$(CXX) $(FLAGS) -o lead_nuc lead_nuc.o $(LIB)
 
+lead_nuc2.o: lead_nuc2.cpp
+	$(CXX) $(LCFLAGS) -o lead_nuc2.o -c lead_nuc2.cpp
+
+lead_nuc2: lead_nuc2.o
+	$(CXX) $(LCFLAGS) -o lead_nuc2 lead_nuc2.o $(LIBS)
+
 eos_mvsr.o: eos_mvsr.cpp
 	$(LCXX) $(LCFLAGS) -o eos_mvsr.o -c eos_mvsr.cpp
 
