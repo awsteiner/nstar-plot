@@ -87,8 +87,10 @@ int main(void) {
   fout << "-set td_wdir gltf \\" << endl;
   // Red appears a bit brighter than blue, so we decrease that value
   // a bit. Protons are red, neutrons are blue. 
-  fout << "-td-mat prot 0.8 0 0 \"alpha=0.3,alpha_mode=blend\" \\" << endl;
-  fout << "-td-mat neut 0 0 1 \"alpha=0.3,alpha_mode=blend\" \\" << endl;
+  fout << "-td-mat prot 0.8 0 0 \"alpha=1.0,alpha_mode=opaque\" \\" << endl;
+  fout << "-td-mat neut 0 0 1 \"alpha=1.0,alpha_mode=opaque\" \\" << endl;
+  //fout << "-td-mat prot 0.8 0 0 \"alpha=0.3,alpha_mode=blend\" \\" << endl;
+  //fout << "-td-mat neut 0 0 1 \"alpha=0.3,alpha_mode=blend\" \\" << endl;
 
   size_t imax=tn.get_nlines();
   if (fast_mode) imax=40;
